@@ -3,11 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ваш Мульт — Оживите фото ребёнка в персональный мультик</title>
-    <meta name="description" content="Telegram-бот создаёт персональное анимационное видео из фотографии вашего ребёнка. Движение, озвучка голосом, музыка — волшебство за 5 минут.">
-    <meta name="theme-color" content="#0D0B1E">
+    <title>Ваш Мульт — Персональный мультфильм из фото вашего ребёнка</title>
+    <meta name="description" content="Telegram-бот создаёт волшебное анимационное видео из одной фотографии: ребёнок двигается, говорит, а на фоне играет музыка. Готово за 5 минут.">
+    <meta name="theme-color" content="#0a0a12">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+
     <style>
+        @font-face {
+            font-family: 'Playfair Display';
+            src: url('assets/fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Playfair Display';
+            src: url('assets/fonts/PlayfairDisplay-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('assets/fonts/Inter-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('assets/fonts/Inter-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('assets/fonts/Inter-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
         *, *::before, *::after {
             margin: 0;
             padding: 0;
@@ -15,24 +52,16 @@
         }
 
         :root {
-            --color-ground: #0D0B1E;
-            --color-ground-warm: #1A1432;
-            --color-surface: rgba(255, 255, 255, 0.03);
-            --color-surface-hover: rgba(255, 255, 255, 0.06);
-            --color-border: rgba(255, 255, 255, 0.08);
-            --color-text: #F1F0F5;
-            --color-text-muted: #9B97A8;
-            --color-pink: #FF6B9D;
-            --color-cyan: #00D4FF;
-            --color-orange: #FFB347;
-            --color-violet: #7C3AED;
-            --color-green: #7AFF6B;
-            --font-display: Georgia, 'Times New Roman', serif;
-            --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --radius-xl: 32px;
+            --color-bg: #0a0a12;
+            --color-bg-warm: #12101a;
+            --color-cream: #faf6f0;
+            --color-gold: #d4a853;
+            --color-gold-light: #f0d48a;
+            --color-text: #e8e4dc;
+            --color-text-muted: #9a9590;
+            --color-accent: #7c5ce7;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         html {
@@ -40,15 +69,19 @@
         }
 
         body {
-            font-family: var(--font-main);
-            background: var(--color-ground);
+            font-family: var(--font-body);
+            background: var(--color-bg);
             color: var(--color-text);
             line-height: 1.6;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== STARS BACKGROUND ===== */
+        .wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Stars background */
         .stars {
             position: fixed;
             top: 0;
@@ -69,347 +102,9 @@
 
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.3); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* ===== GRADIENT BLOB ===== */
-        .gradient-blob {
-            position: absolute;
-            width: 140vmax;
-            height: 140vmax;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: conic-gradient(
-                from 0deg,
-                var(--color-violet),
-                var(--color-pink),
-                var(--color-orange),
-                var(--color-cyan),
-                var(--color-violet)
-            );
-            filter: blur(100px);
-            opacity: 0.25;
-            animation: blobRotate 25s linear infinite, blobMorph 10s ease-in-out infinite;
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes blobRotate {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes blobMorph {
-            0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-            25% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
-            50% { border-radius: 50% 60% 30% 60% / 70% 40% 70% 30%; }
-            75% { border-radius: 30% 50% 70% 40% / 50% 60% 30% 60%; }
-        }
-
-        /* ===== AMBIENT ORBS ===== */
-        .ambient-orb {
-            position: absolute;
-            width: clamp(200px, 30vw, 400px);
-            aspect-ratio: 1;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            animation: orbDrift 20s ease-in-out infinite alternate;
-        }
-
-        .ambient-orb-1 {
-            top: 20%;
-            left: -10%;
-            background: radial-gradient(circle, rgba(255, 107, 157, 0.15), transparent 70%);
-        }
-
-        .ambient-orb-2 {
-            bottom: 30%;
-            right: -10%;
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.12), transparent 70%);
-            animation-delay: -10s;
-        }
-
-        @keyframes orbDrift {
-            from { transform: translate(0, 0) scale(1); }
-            to { transform: translate(8vw, -6vh) scale(1.2); }
-        }
-
-        /* ===== FLOATING ELEMENTS ===== */
-        .float-element {
-            position: absolute;
-            font-size: clamp(2rem, 5vw, 4rem);
-            opacity: 0;
-            animation: float 6s ease-in-out infinite, fadeInFloat 1s ease forwards;
-            pointer-events: none;
-            z-index: 1;
-            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3));
-        }
-
-        .float-element:nth-child(1) { top: 12%; left: 6%; animation-delay: 0.2s, 0.5s; }
-        .float-element:nth-child(2) { top: 22%; right: 10%; animation-delay: 1.2s, 0.7s; animation-duration: 7s, 1s; }
-        .float-element:nth-child(3) { bottom: 35%; left: 4%; animation-delay: 2.2s, 0.9s; animation-duration: 5s, 1s; }
-        .float-element:nth-child(4) { bottom: 25%; right: 6%; animation-delay: 0.7s, 1.1s; }
-        .float-element:nth-child(5) { top: 55%; left: 12%; animation-delay: 1.7s, 1.3s; animation-duration: 8s, 1s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(8deg); }
-        }
-
-        @keyframes fadeInFloat {
-            to { opacity: 0.75; }
-        }
-
-        /* ===== HERO ===== */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            padding: 100px 24px;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 900px;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 22px;
-            background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(255, 107, 157, 0.2));
-            border: 1px solid rgba(255, 107, 157, 0.3);
-            border-radius: 50px;
-            font-size: 0.9rem;
-            color: var(--color-pink);
-            margin-bottom: 28px;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .hero-badge-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--color-green);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.3); }
-        }
-
-        .hero h1 {
-            font-family: var(--font-display);
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -0.02em;
-            opacity: 0;
-            transform: translateY(40px);
-        }
-
-        .text-gradient {
-            background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-orange) 50%, var(--color-cyan) 100%);
-            background-size: 200% 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 5s ease-in-out infinite alternate;
-        }
-
-        @keyframes gradientShift {
-            from { background-position: 0% center; }
-            to { background-position: 100% center; }
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            color: var(--color-text-muted);
-            max-width: 650px;
-            margin: 0 auto 40px;
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .hero-cta-wrapper {
-            opacity: 0;
-            transform: translateY(25px);
-        }
-
-        /* ===== CTA BUTTON WITH SHIMMER ===== */
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 18px 38px;
-            background: linear-gradient(135deg, var(--color-pink) 0%, var(--color-violet) 100%);
-            color: white;
-            font-family: var(--font-main);
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 60px;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 30px rgba(255, 107, 157, 0.4);
-        }
-
-        .cta-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -80%;
-            width: 55%;
-            height: 100%;
-            background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent);
-            transform: skewX(-20deg);
-            animation: ctaShimmer 3.5s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes ctaShimmer {
-            0%, 55% { left: -80%; }
-            85%, 100% { left: 140%; }
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 12px 50px rgba(255, 107, 157, 0.55);
-        }
-
-        .cta-btn svg {
-            width: 20px;
-            height: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .cta-btn:hover svg {
-            transform: translateX(5px);
-        }
-
-        .hero-note {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--color-text-muted);
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* ===== STATS ROW (Spring Counters) ===== */
-        .stats-row {
-            display: flex;
-            justify-content: center;
-            gap: clamp(24px, 7vw, 56px);
-            margin: 32px 0;
-            opacity: 0;
-            transform: translateY(25px);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-val {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--color-cyan), var(--color-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .stat-lbl {
-            color: var(--color-text-muted);
-            font-size: 0.85rem;
-            margin-top: 4px;
-        }
-
-        .hero-trust {
-            display: flex;
-            gap: 12px;
-            margin-top: 28px;
-            flex-wrap: wrap;
-            justify-content: center;
-            opacity: 0;
-            transform: translateY(25px);
-        }
-
-        .trust-badge {
-            padding: 8px 16px;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--color-text-muted);
-            white-space: nowrap;
-            transition: border-color 0.3s ease, color 0.3s ease;
-        }
-
-        .trust-badge:hover {
-            border-color: rgba(255, 107, 157, 0.4);
-            color: var(--color-pink);
-        }
-
-        /* ===== MARQUEE BANNER ===== */
-        .marquee-banner {
-            overflow: hidden;
-            padding: 16px 0;
-            background: rgba(124, 58, 237, 0.08);
-            border-top: 1px solid rgba(124, 58, 237, 0.2);
-            border-bottom: 1px solid rgba(124, 58, 237, 0.2);
-            white-space: nowrap;
-        }
-
-        .marquee-track {
-            display: inline-flex;
-            animation: marqueeScroll 30s linear infinite;
-        }
-
-        .marquee-content {
-            display: inline-block;
-            padding: 0 24px;
-            font-size: 1rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--color-pink);
-        }
-
-        @keyframes marqueeScroll {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
-
-        /* ===== WAVE DIVIDER ===== */
-        .wave-divider {
-            width: 100%;
-            height: 80px;
-            margin-top: -1px;
-        }
-
-        .wave-divider svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-
-        /* ===== SECTIONS ===== */
         section {
             position: relative;
             z-index: 1;
@@ -421,34 +116,39 @@
             margin: 0 auto;
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-            opacity: 0;
-            transform: translateY(40px);
-        }
-
-        .section-header h2 {
+        h1, h2, h3 {
             font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 700;
-            margin-bottom: 16px;
             line-height: 1.2;
         }
 
-        .section-header p {
-            color: var(--color-text-muted);
-            max-width: 600px;
-            margin: 0 auto;
-            font-size: 1.1rem;
+        h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); }
+        h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
+        h3 { font-size: clamp(1.15rem, 3vw, 1.5rem); }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 50%, var(--color-cream) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* ===== REVEAL ANIMATIONS ===== */
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-header p {
+            margin-top: 16px;
+            color: var(--color-text-muted);
+            font-size: 1.125rem;
+        }
+
+        /* Reveal on scroll */
         .reveal {
             opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal.visible {
@@ -461,65 +161,298 @@
         .reveal-delay-3 { transition-delay: 0.3s; }
         .reveal-delay-4 { transition-delay: 0.4s; }
 
+        /* CTA button */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            font-family: var(--font-body);
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 30px rgba(212, 168, 83, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(212, 168, 83, 0.5);
+        }
+
+        .cta-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Glass card base */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(212, 168, 83, 0.3);
+        }
+
+        /* Gold line icon */
+        .line-icon {
+            width: 48px;
+            height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: rgba(212, 168, 83, 0.08);
+            border: 1px solid rgba(212, 168, 83, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .line-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--color-gold);
+            fill: none;
+            stroke-width: 1.6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            padding-top: 120px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 900px;
+            height: 900px;
+            top: -350px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: radial-gradient(circle, rgba(124, 92, 231, 0.12) 0%, rgba(212, 168, 83, 0.05) 40%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 60px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: var(--color-gold-light);
+            background: rgba(212, 168, 83, 0.06);
+            margin-bottom: 32px;
+        }
+
+        .hero-badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--color-gold);
+            box-shadow: 0 0 12px var(--color-gold);
+            animation: pulse-dot 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .hero h1 {
+            max-width: 900px;
+            margin: 0 auto 28px;
+        }
+
+        .hero-subtitle {
+            max-width: 620px;
+            margin: 0 auto 40px;
+            font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+            color: var(--color-text-muted);
+        }
+
+        .hero-note {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .hero-trust {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 36px;
+        }
+
+        .trust-badge {
+            padding: 9px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 60px;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Cinema screen visual */
+        .hero-screen {
+            width: min(680px, 92vw);
+            margin: 64px auto 40px;
+            position: relative;
+        }
+
+        .hero-screen-frame {
+            position: relative;
+            border-radius: 20px;
+            border: 1px solid rgba(212, 168, 83, 0.25);
+            background: linear-gradient(160deg, #16131f 0%, #0d0b16 60%, #12101a 100%);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(212, 168, 83, 0.08);
+            padding: 14px;
+        }
+
+        .hero-screen-inner {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 90% 70% at 50% 100%, rgba(124, 92, 231, 0.25) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 60% at 50% 0%, rgba(212, 168, 83, 0.18) 0%, transparent 55%),
+                linear-gradient(180deg, #191527 0%, #0e0c18 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-screen-inner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 18% 30%, rgba(255,255,255,0.7) 1px, transparent 1.6px),
+                radial-gradient(circle at 72% 22%, rgba(255,255,255,0.5) 1px, transparent 1.6px),
+                radial-gradient(circle at 85% 60%, rgba(255,255,255,0.6) 1px, transparent 1.6px),
+                radial-gradient(circle at 35% 70%, rgba(255,255,255,0.4) 1px, transparent 1.6px),
+                radial-gradient(circle at 55% 40%, rgba(255,255,255,0.5) 1px, transparent 1.6px);
+        }
+
+        .hero-play {
+            position: relative;
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 40px rgba(212, 168, 83, 0.45);
+            animation: play-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes play-pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 8px 40px rgba(212, 168, 83, 0.45); }
+            50% { transform: scale(1.06); box-shadow: 0 8px 60px rgba(212, 168, 83, 0.65); }
+        }
+
+        .hero-play svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--color-bg);
+            margin-left: 5px;
+        }
+
+        .hero-screen-caption {
+            position: absolute;
+            left: 28px;
+            bottom: 28px;
+            text-align: left;
+        }
+
+        .hero-screen-caption .cap-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            color: var(--color-cream);
+        }
+
+        .hero-screen-caption .cap-sub {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: clamp(32px, 8vw, 80px);
+            margin-top: 8px;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .stat-val {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700;
+            color: var(--color-gold);
+        }
+
+        .hero-stat .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            letter-spacing: 0.04em;
+        }
+
         /* ===== HOW IT WORKS ===== */
         .how-it-works {
-            background: var(--color-ground-warm);
+            background: var(--color-bg-warm);
         }
 
         .steps {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
         }
 
         .step {
-            text-align: center;
-            padding: 40px 28px;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.3s ease,
-                        box-shadow 0.4s ease;
-        }
-
-        .step:hover {
-            transform: translateY(-10px);
-            border-color: rgba(255, 107, 157, 0.35);
-            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.15);
-        }
-
-        .step-icon {
-            font-size: 3.2rem;
-            margin-bottom: 20px;
-            display: block;
-            animation: idleFloat 4s ease-in-out infinite;
-            animation-delay: var(--float-delay, 0s);
-        }
-
-        @keyframes idleFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+            padding: 36px 28px;
+            position: relative;
         }
 
         .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--color-pink), var(--color-violet));
-            color: white;
-            font-size: 1.1rem;
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            font-family: var(--font-display);
+            font-size: 2.6rem;
             font-weight: 700;
-            border-radius: 50%;
-            margin-bottom: 18px;
+            color: rgba(212, 168, 83, 0.18);
+            line-height: 1;
         }
 
         .step h3 {
-            font-size: 1.25rem;
-            margin-bottom: 12px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--color-cream);
         }
 
         .step p {
@@ -527,190 +460,59 @@
             font-size: 0.95rem;
         }
 
-        /* ===== BEFORE/AFTER EXAMPLES ===== */
-        .examples {
-            background: var(--color-ground);
-            overflow: hidden;
-        }
-
+        /* ===== EXAMPLES ===== */
         .examples-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         .example-card {
-            position: relative;
-            background: linear-gradient(145deg, rgba(124, 58, 237, 0.08), rgba(255, 107, 157, 0.08));
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            padding: 36px;
-            overflow: hidden;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 0.5s ease,
-                        border-color 0.3s ease;
+            padding: 36px 28px;
         }
 
-        .example-card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 25px 70px rgba(124, 58, 237, 0.25);
-            border-color: rgba(255, 107, 157, 0.3);
-        }
-
-        .example-visual {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 28px;
-        }
-
-        .example-photo, .example-video {
-            width: 110px;
-            height: 110px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.8rem;
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-
-        .example-card:hover .example-photo,
-        .example-card:hover .example-video {
-            transform: scale(1.05);
-        }
-
-        .example-photo {
-            background: linear-gradient(135deg, #2a2640, #1a1432);
-            border: 2px dashed rgba(255,255,255,0.2);
-        }
-
-        .example-video {
-            background: linear-gradient(135deg, var(--color-violet), var(--color-pink));
-            box-shadow: 0 10px 40px rgba(255, 107, 157, 0.35);
-        }
-
-        .example-arrow {
-            font-size: 2.2rem;
-            color: var(--color-cyan);
-            animation: arrowPulse 1.8s ease-in-out infinite;
-        }
-
-        @keyframes arrowPulse {
-            0%, 100% { transform: translateX(0); opacity: 1; }
-            50% { transform: translateX(8px); opacity: 0.5; }
+        .example-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 60px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--color-gold-light);
+            background: rgba(212, 168, 83, 0.1);
+            border: 1px solid rgba(212, 168, 83, 0.2);
+            margin-bottom: 24px;
         }
 
         .example-card h3 {
-            font-size: 1.15rem;
             margin-bottom: 10px;
-            color: var(--color-text);
+            color: var(--color-cream);
         }
 
         .example-card p {
             color: var(--color-text-muted);
-            font-size: 0.92rem;
-        }
-
-        .example-tag {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            padding: 6px 14px;
-            background: rgba(0, 212, 255, 0.12);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            color: var(--color-cyan);
-            font-weight: 500;
-        }
-
-        /* ===== XXL KINETIC DIVIDER ===== */
-        .xxl-divider {
-            overflow: hidden;
-            padding: clamp(30px, 8vh, 80px) 0;
-            background: #080610;
-            display: flex;
-            justify-content: center;
-        }
-
-        .xxl-word {
-            font-family: var(--font-display);
-            font-size: clamp(4rem, 18vw, 13rem);
-            font-weight: 900;
-            line-height: 1;
-            white-space: nowrap;
-            background-image:
-                radial-gradient(circle at 30% 30%, var(--color-pink), transparent 40%),
-                radial-gradient(circle at 70% 65%, var(--color-orange), transparent 45%),
-                linear-gradient(140deg, var(--color-violet), var(--color-pink), var(--color-cyan));
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: xxlGlow 8s ease-in-out infinite alternate;
-        }
-
-        @keyframes xxlGlow {
-            to { background-position: 100% 100%; }
+            font-size: 0.95rem;
         }
 
         /* ===== FEATURES ===== */
         .features {
-            background: var(--color-ground-warm);
+            background: var(--color-bg-warm);
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 24px;
         }
 
         .feature-card {
-            padding: 36px;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--color-pink), var(--color-cyan));
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.4s ease;
-        }
-
-        .feature-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .feature-card:hover {
-            border-color: rgba(0, 212, 255, 0.3);
-            background: var(--color-surface-hover);
-            transform: translateY(-6px);
-        }
-
-        .feature-icon {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            display: block;
+            padding: 36px 28px;
         }
 
         .feature-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 12px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--color-cream);
         }
 
         .feature-card p {
@@ -719,38 +521,33 @@
         }
 
         /* ===== PRICING ===== */
-        .pricing {
-            background: var(--color-ground);
-        }
-
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 28px;
-            max-width: 1050px;
-            margin: 0 auto;
+            align-items: stretch;
         }
 
         .pricing-card {
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-xl);
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
             padding: 44px 36px;
             text-align: center;
             position: relative;
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.3s ease,
-                        box-shadow 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s ease, border-color 0.4s ease;
         }
 
         .pricing-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+            transform: translateY(-8px);
+            border-color: rgba(212, 168, 83, 0.3);
         }
 
         .pricing-card.featured {
-            border-color: var(--color-pink);
-            background: linear-gradient(180deg, rgba(255, 107, 157, 0.1) 0%, transparent 50%);
+            border-color: var(--color-gold);
+            background: linear-gradient(180deg, rgba(212, 168, 83, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
         }
 
         .pricing-badge {
@@ -758,138 +555,121 @@
             top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 8px 22px;
-            background: linear-gradient(135deg, var(--color-pink), var(--color-violet));
-            color: white;
-            font-size: 0.75rem;
+            padding: 6px 20px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            font-size: 0.78rem;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(255, 107, 157, 0.4);
-        }
-
-        .pricing-icon {
-            font-size: 3.2rem;
-            margin-bottom: 18px;
-            display: block;
+            letter-spacing: 0.06em;
+            border-radius: 60px;
+            white-space: nowrap;
         }
 
         .pricing-title {
             font-family: var(--font-display);
             font-size: 1.5rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            color: var(--color-cream);
+            margin-bottom: 6px;
         }
 
         .pricing-desc {
+            font-size: 0.9rem;
             color: var(--color-text-muted);
-            margin-bottom: 26px;
-            font-size: 0.95rem;
+            margin-bottom: 24px;
         }
 
         .pricing-price {
             font-family: var(--font-display);
             font-size: 3rem;
-            font-weight: 800;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--color-cyan), var(--color-pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            color: var(--color-gold);
+            margin-bottom: 28px;
+            line-height: 1;
         }
 
         .pricing-price span {
-            font-size: 1rem;
+            font-size: 1.1rem;
+            color: var(--color-text-muted);
+            font-family: var(--font-body);
             font-weight: 400;
-            -webkit-text-fill-color: var(--color-text-muted);
         }
 
         .pricing-features {
             list-style: none;
             text-align: left;
-            margin: 28px 0;
+            margin-bottom: 32px;
+            flex-grow: 1;
         }
 
         .pricing-features li {
-            padding: 11px 0;
+            padding: 9px 0 9px 30px;
+            position: relative;
             color: var(--color-text);
-            display: flex;
-            align-items: center;
-            gap: 12px;
             font-size: 0.95rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
         }
 
         .pricing-features li::before {
             content: '';
-            width: 20px;
-            height: 20px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300D4FF'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") center/contain no-repeat;
-            flex-shrink: 0;
+            position: absolute;
+            left: 4px;
+            top: 15px;
+            width: 14px;
+            height: 8px;
+            border-left: 2px solid var(--color-gold);
+            border-bottom: 2px solid var(--color-gold);
+            transform: rotate(-45deg);
         }
 
         .pricing-cta {
             display: block;
-            width: 100%;
-            padding: 16px;
-            background: transparent;
-            border: 2px solid var(--color-pink);
-            color: var(--color-pink);
-            font-size: 1rem;
+            padding: 15px 32px;
+            border-radius: 60px;
             font-weight: 600;
-            border-radius: 50px;
-            cursor: pointer;
+            font-size: 1rem;
             text-decoration: none;
-            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px solid rgba(212, 168, 83, 0.4);
+            color: var(--color-gold-light);
+            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
         }
 
         .pricing-cta:hover {
-            background: var(--color-pink);
-            color: white;
-            box-shadow: 0 8px 30px rgba(255, 107, 157, 0.3);
+            background: rgba(212, 168, 83, 0.1);
+            transform: translateY(-2px);
         }
 
         .pricing-card.featured .pricing-cta {
-            background: linear-gradient(135deg, var(--color-pink), var(--color-violet));
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
             border: none;
-            color: white;
+            box-shadow: 0 4px 24px rgba(212, 168, 83, 0.3);
         }
 
         .pricing-card.featured .pricing-cta:hover {
-            box-shadow: 0 12px 40px rgba(255, 107, 157, 0.45);
-            transform: scale(1.02);
+            box-shadow: 0 8px 34px rgba(212, 168, 83, 0.45);
         }
 
         /* ===== REVIEWS ===== */
         .reviews {
-            background: var(--color-ground-warm);
-            overflow: hidden;
+            background: var(--color-bg-warm);
         }
 
         .reviews-scroll {
             display: flex;
             gap: 24px;
             overflow-x: auto;
-            padding: 20px 24px 40px;
+            padding: 8px 24px 24px;
             scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
-            scrollbar-color: rgba(255, 107, 157, 0.4) transparent;
-            -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
-            mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
-        }
-
-        .reviews-scroll::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .reviews-scroll::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .reviews-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 107, 157, 0.4);
-            border-radius: 3px;
+            scrollbar-color: rgba(212, 168, 83, 0.3) transparent;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .review-card {
@@ -897,180 +677,148 @@
             width: 350px;
             min-height: 220px;
             padding: 30px;
-            background: var(--color-surface);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            scroll-snap-align: start;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-
-        .review-card:hover {
-            transform: scale(1.02);
-            border-color: rgba(255, 179, 71, 0.4);
+            justify-content: space-between;
+            scroll-snap-align: start;
         }
 
         .review-stars {
-            color: var(--color-orange);
-            font-size: 1.25rem;
-            margin-bottom: 16px;
+            color: var(--color-gold);
+            font-size: 1.1rem;
             letter-spacing: 3px;
+            margin-bottom: 16px;
         }
 
         .review-text {
             color: var(--color-text);
-            font-size: 0.95rem;
-            line-height: 1.75;
-            flex-grow: 1;
+            font-size: 0.98rem;
             font-style: italic;
+            margin-bottom: 20px;
         }
 
         .review-author {
-            margin-top: 18px;
             color: var(--color-text-muted);
             font-size: 0.85rem;
         }
 
         /* ===== FAQ ===== */
-        .faq {
-            background: var(--color-ground);
-        }
-
         .faq-list {
-            max-width: 800px;
+            max-width: 760px;
             margin: 0 auto;
         }
 
         .faq-item {
-            border-bottom: 1px solid var(--color-border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .faq-question {
             width: 100%;
-            padding: 26px 0;
+            padding: 24px 0;
             background: none;
             border: none;
             text-align: left;
-            font-family: var(--font-main);
-            font-size: 1.1rem;
+            font-family: var(--font-body);
+            font-size: 1.125rem;
             font-weight: 500;
-            color: var(--color-text);
+            color: var(--color-cream);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            transition: color 0.3s ease;
-        }
-
-        .faq-question:hover {
-            color: var(--color-pink);
         }
 
         .faq-icon {
-            width: 28px;
-            height: 28px;
-            border: 2px solid var(--color-cyan);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        background 0.3s ease;
+        }
+
+        .faq-icon::before, .faq-icon::after {
+            content: '';
+            position: absolute;
+            background: var(--color-gold);
+            transition: transform 0.3s ease;
         }
 
         .faq-icon::before {
-            content: '+';
-            font-size: 1.3rem;
-            color: var(--color-cyan);
-            line-height: 1;
+            top: 8px;
+            left: 0;
+            width: 18px;
+            height: 2px;
         }
 
-        .faq-item.active .faq-icon {
-            background: var(--color-cyan);
-            transform: rotate(45deg);
+        .faq-icon::after {
+            top: 0;
+            left: 8px;
+            width: 2px;
+            height: 18px;
         }
 
-        .faq-item.active .faq-icon::before {
-            color: var(--color-ground);
+        .faq-item.open .faq-icon::after {
+            transform: rotate(90deg);
         }
 
         .faq-answer {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                        padding 0.5s ease;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 400px;
-            padding-bottom: 26px;
+            transition: max-height 0.4s ease;
         }
 
         .faq-answer p {
+            padding: 0 0 24px;
             color: var(--color-text-muted);
-            line-height: 1.75;
         }
 
         /* ===== FINAL CTA ===== */
         .final-cta {
-            background: radial-gradient(ellipse at 50% 100%, rgba(124, 58, 237, 0.28) 0%, transparent 60%),
-                        var(--color-ground);
             text-align: center;
-            padding: 130px 24px;
+            padding: 140px 24px;
             position: relative;
             overflow: hidden;
         }
 
-        .final-cta .ambient-orb {
+        .final-cta::before {
+            content: '';
             position: absolute;
-            width: 500px;
-            height: 500px;
-            bottom: -200px;
+            width: 700px;
+            height: 700px;
+            bottom: -400px;
             left: 50%;
             transform: translateX(-50%);
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.2), transparent 60%);
-            animation: none;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.12) 0%, transparent 70%);
+            pointer-events: none;
         }
 
         .final-cta h2 {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            margin-bottom: 22px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 20px;
         }
 
         .final-cta p {
             color: var(--color-text-muted);
-            font-size: 1.2rem;
-            max-width: 560px;
-            margin: 0 auto 44px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .final-cta .cta-btn {
-            position: relative;
-            z-index: 1;
+            font-size: 1.125rem;
+            margin-bottom: 40px;
         }
 
         /* ===== STICKY MOBILE CTA ===== */
         .sticky-cta {
-            display: none;
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 14px 18px;
-            background: rgba(13, 11, 30, 0.96);
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+            background: rgba(10, 10, 18, 0.9);
             backdrop-filter: blur(12px);
-            border-top: 1px solid var(--color-border);
-            z-index: 1000;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border-top: 1px solid rgba(212, 168, 83, 0.2);
+            transform: translateY(110%);
+            transition: transform 0.4s ease;
+            z-index: 50;
+            display: none;
         }
 
         .sticky-cta.visible {
@@ -1079,52 +827,29 @@
 
         .sticky-cta a {
             display: block;
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--color-pink), var(--color-violet));
-            color: white;
-            font-weight: 600;
             text-align: center;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            font-weight: 600;
+            border-radius: 60px;
             text-decoration: none;
-            border-radius: 50px;
-            position: relative;
-            animation: ctaBreathe 2.8s ease-in-out infinite;
-        }
-
-        .sticky-cta a::before {
-            content: '';
-            position: absolute;
-            inset: -3px;
-            border-radius: 50px;
-            border: 2px solid var(--color-pink);
-            animation: ctaPulseRing 2.8s ease-out infinite;
-            pointer-events: none;
-        }
-
-        @keyframes ctaBreathe {
-            0%, 100% { box-shadow: 0 0 18px rgba(255, 107, 157, 0.35); }
-            50% { box-shadow: 0 0 38px rgba(255, 107, 157, 0.6); }
-        }
-
-        @keyframes ctaPulseRing {
-            0% { opacity: 0.7; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1.15, 1.5); }
         }
 
         @media (max-width: 768px) {
-            .sticky-cta {
-                display: block;
-            }
-            body {
-                padding-bottom: 80px;
-            }
+            .sticky-cta { display: block; }
+            section { padding: 72px 20px; }
+            .review-card { width: 290px; padding: 22px; }
+            .hero-screen-caption { left: 18px; bottom: 16px; }
         }
 
         /* ===== FOOTER ===== */
         footer {
-            background: var(--color-ground-warm);
-            padding: 70px 24px 35px;
-            border-top: 1px solid var(--color-border);
+            position: relative;
+            z-index: 1;
+            background: var(--color-bg-warm);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 64px 24px 32px;
         }
 
         .footer-content {
@@ -1132,30 +857,30 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 50px;
+            gap: 48px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content { grid-template-columns: 1fr; gap: 36px; }
         }
 
         .footer-brand h3 {
             font-family: var(--font-display);
-            font-size: 1.6rem;
+            color: var(--color-gold);
             margin-bottom: 14px;
-            background: linear-gradient(135deg, var(--color-pink), var(--color-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
 
         .footer-brand p {
             color: var(--color-text-muted);
-            font-size: 0.95rem;
-            line-height: 1.7;
+            font-size: 0.9rem;
+            max-width: 340px;
         }
 
         .footer-col h4 {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            letter-spacing: 1px;
             color: var(--color-text-muted);
             margin-bottom: 18px;
         }
@@ -1171,548 +896,464 @@
         .footer-col a {
             color: var(--color-text);
             text-decoration: none;
+            font-size: 0.95rem;
             transition: color 0.3s ease;
         }
 
         .footer-col a:hover {
-            color: var(--color-pink);
+            color: var(--color-gold-light);
         }
 
         .footer-bottom {
             max-width: 1200px;
-            margin: 50px auto 0;
-            padding-top: 30px;
-            border-top: 1px solid var(--color-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-legal {
+            margin: 48px auto 0;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
             color: var(--color-text-muted);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            text-align: center;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 900px) {
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 40px;
-            }
-            .float-element {
-                font-size: clamp(1.5rem, 4vw, 2.5rem);
-            }
-        }
-
-        @media (max-width: 600px) {
-            section {
-                padding: 70px 18px;
-            }
-            .hero {
-                padding: 90px 18px;
-            }
-            .cta-btn {
-                padding: 16px 30px;
-                font-size: 1rem;
-            }
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-            .stats-row {
-                gap: 20px;
-            }
-            .review-card {
-                width: 300px;
-                padding: 24px;
-            }
-        }
-
-        /* ===== REDUCED MOTION ===== */
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+            .reveal, .hero-badge, .hero h1, .hero-subtitle {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
             }
-            .gradient-blob, .star {
-                animation: none;
+            .star, .hero-play, .hero-badge-dot {
+                animation: none !important;
             }
-            .reveal, .section-header, .hero-badge, .hero h1, .hero-subtitle,
-            .hero-cta-wrapper, .hero-note, .hero-trust, .stats-row {
-                opacity: 1;
-                transform: none;
-            }
-            html {
-                scroll-behavior: auto;
-            }
+            html { scroll-behavior: auto; }
         }
     </style>
 </head>
 <body>
-    <!-- Stars Background -->
-    <div class="stars" id="stars"></div>
+    <div class="wrapper">
+        <div class="stars" id="stars"></div>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="gradient-blob"></div>
-        <div class="ambient-orb ambient-orb-1"></div>
-        <div class="ambient-orb ambient-orb-2"></div>
-
-        <div class="float-element">&#127916;</div>
-        <div class="float-element">&#10024;</div>
-        <div class="float-element">&#127775;</div>
-        <div class="float-element">&#127912;</div>
-        <div class="float-element">&#127752;</div>
-
-        <div class="hero-content">
-            <div class="hero-badge">
+        <!-- ===== HERO ===== -->
+        <section class="hero">
+            <div class="hero-badge reveal">
                 <span class="hero-badge-dot"></span>
-                Telegram-бот, который творит чудеса
+                Персональный AI-мультфильм из одного фото
             </div>
 
-            <h1><span class="text-gradient">Оживите фото ребёнка</span><br>в персональный мультик</h1>
+            <h1 class="reveal reveal-delay-1"><span class="text-gradient">Ваш ребёнок —<br>герой мультфильма</span></h1>
 
-            <p class="hero-subtitle">Загрузите одно фото — получите волшебное видео: ваш малыш двигается, говорит своим голосом, а на фоне играет музыка. Готово за 5 минут.</p>
+            <p class="hero-subtitle reveal reveal-delay-2">Загрузите одно фото — получите волшебное видео: малыш двигается, говорит своим голосом, а на фоне играет музыка. Готово за 5 минут.</p>
 
-            <div class="stats-row">
-                <div class="stat-item">
-                    <div class="stat-val" data-count="5">0</div>
-                    <div class="stat-lbl">минут</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-val" data-count="4.9" data-dec="1">0</div>
-                    <div class="stat-lbl">рейтинг</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-val" data-count="1000" data-suffix="+">0</div>
-                    <div class="stat-lbl">мультиков</div>
-                </div>
-            </div>
-
-            <div class="hero-cta-wrapper">
-                <a href="https://t.me/Vashmult_bot" class="cta-btn">
+            <div class="reveal reveal-delay-3">
+                <a href="https://t.me/Vashmult_bot" class="cta-btn" target="_blank" rel="noopener">
                     Создать мультик бесплатно
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
+                <p class="hero-note">Без регистрации, первый мультик — в подарок</p>
             </div>
 
-            <p class="hero-note">Без регистрации, первый мультик — в подарок</p>
+            <div class="hero-screen reveal reveal-delay-4">
+                <div class="hero-screen-frame">
+                    <div class="hero-screen-inner">
+                        <a class="hero-play" href="https://t.me/Vashmult_bot" target="_blank" rel="noopener" aria-label="Создать мультик">
+                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        </a>
+                        <div class="hero-screen-caption">
+                            <div class="cap-title">Премьера вашего малыша</div>
+                            <div class="cap-sub">анимация · озвучка · музыка</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-            <div class="hero-trust">
+            <div class="hero-stats reveal">
+                <div class="hero-stat">
+                    <div class="stat-val">5</div>
+                    <div class="stat-lbl">минут на создание</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-val">4.9</div>
+                    <div class="stat-lbl">рейтинг родителей</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-val">1000+</div>
+                    <div class="stat-lbl">мультиков создано</div>
+                </div>
+            </div>
+
+            <div class="hero-trust reveal">
                 <span class="trust-badge">AI-озвучка голосом</span>
                 <span class="trust-badge">Музыка в подарок</span>
                 <span class="trust-badge">Без водяных знаков</span>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Marquee Banner -->
-    <div class="marquee-banner">
-        <div class="marquee-track">
-            <span class="marquee-content">&#10024; ВАШ РЕБЁНОК — ЗВЕЗДА МУЛЬТИКА &#10024; ОЖИВЛЯЕМ ФОТО ЗА 5 МИНУТ &#10024; AI-АНИМАЦИЯ + ОЗВУЧКА &#10024; ПЕРВЫЙ МУЛЬТИК БЕСПЛАТНО &#10024;</span>
-            <span class="marquee-content">&#10024; ВАШ РЕБЁНОК — ЗВЕЗДА МУЛЬТИКА &#10024; ОЖИВЛЯЕМ ФОТО ЗА 5 МИНУТ &#10024; AI-АНИМАЦИЯ + ОЗВУЧКА &#10024; ПЕРВЫЙ МУЛЬТИК БЕСПЛАТНО &#10024;</span>
-        </div>
-    </div>
-
-    <!-- Wave Divider -->
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
-            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#1A1432"/>
-        </svg>
-    </div>
-
-    <!-- How It Works -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2><span class="text-gradient">Как это работает</span></h2>
-                <p>Всего 4 простых шага до волшебства</p>
-            </div>
-
-            <div class="steps">
-                <div class="step reveal reveal-delay-1" style="--float-delay: 0s">
-                    <span class="step-icon">&#128247;</span>
-                    <div class="step-number">1</div>
-                    <h3>Загрузите фото</h3>
-                    <p>Одно качественное фото лица ребёнка — анфас, хорошее освещение</p>
+        <!-- ===== HOW IT WORKS ===== -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="text-gradient">Как это работает</h2>
+                    <p>Всего 4 простых шага до волшебства</p>
                 </div>
-                <div class="step reveal reveal-delay-2" style="--float-delay: 0.5s">
-                    <span class="step-icon">&#128173;</span>
-                    <div class="step-number">2</div>
-                    <h3>Выберите сценарий</h3>
-                    <p>Поздравление, стишок, приключение — или напишите свой текст</p>
-                </div>
-                <div class="step reveal reveal-delay-3" style="--float-delay: 1s">
-                    <span class="step-icon">&#127908;</span>
-                    <div class="step-number">3</div>
-                    <h3>Озвучка и музыка</h3>
-                    <p>AI озвучит текст детским голосом, добавит атмосферную музыку</p>
-                </div>
-                <div class="step reveal reveal-delay-4" style="--float-delay: 1.5s">
-                    <span class="step-icon">&#127916;</span>
-                    <div class="step-number">4</div>
-                    <h3>Получите видео</h3>
-                    <p>Скачайте готовый мультик — делитесь в мессенджерах и соцсетях</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Wave Divider Inverted -->
-    <div class="wave-divider" style="transform: rotate(180deg); margin-top: -1px;">
-        <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
-            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#1A1432"/>
-        </svg>
-    </div>
-
-    <!-- Examples -->
-    <section class="examples" id="examples">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2>Фото <span class="text-gradient">&#10132;</span> Мультик</h2>
-                <p>Посмотрите, как обычные фотографии превращаются в живые видео</p>
-            </div>
-
-            <div class="examples-grid">
-                <div class="example-card reveal reveal-delay-1">
-                    <span class="example-tag">День рождения</span>
-                    <div class="example-visual">
-                        <div class="example-photo">&#128118;</div>
-                        <span class="example-arrow">&#10132;</span>
-                        <div class="example-video">&#127881;</div>
+                <div class="steps">
+                    <div class="step glass-card reveal reveal-delay-1">
+                        <div class="step-number">01</div>
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        </div>
+                        <h3>Загрузите фото</h3>
+                        <p>Одно качественное фото лица ребёнка — анфас, хорошее освещение</p>
                     </div>
-                    <h3>Поздравление от ребёнка</h3>
-                    <p>Малыш сам поздравляет бабушку с юбилеем — она будет в восторге!</p>
-                </div>
-
-                <div class="example-card reveal reveal-delay-2">
-                    <span class="example-tag">Стихи</span>
-                    <div class="example-visual">
-                        <div class="example-photo">&#128103;</div>
-                        <span class="example-arrow">&#10132;</span>
-                        <div class="example-video">&#128218;</div>
+                    <div class="step glass-card reveal reveal-delay-2">
+                        <div class="step-number">02</div>
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+                        </div>
+                        <h3>Выберите сценарий</h3>
+                        <p>Поздравление, стишок, приключение — или напишите свой текст</p>
                     </div>
-                    <h3>Ребёнок читает стихи</h3>
-                    <p>Любимое стихотворение в исполнении вашего малыша — память навсегда</p>
-                </div>
-
-                <div class="example-card reveal reveal-delay-3">
-                    <span class="example-tag">Сказка</span>
-                    <div class="example-visual">
-                        <div class="example-photo">&#128102;</div>
-                        <span class="example-arrow">&#10132;</span>
-                        <div class="example-video">&#128171;</div>
+                    <div class="step glass-card reveal reveal-delay-3">
+                        <div class="step-number">03</div>
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                        </div>
+                        <h3>Озвучка и музыка</h3>
+                        <p>AI озвучит текст детским голосом, добавит атмосферную музыку</p>
                     </div>
-                    <h3>Герой сказки</h3>
-                    <p>Ребёнок рассказывает свою историю — как настоящий мультгерой</p>
+                    <div class="step glass-card reveal reveal-delay-4">
+                        <div class="step-number">04</div>
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+                        </div>
+                        <h3>Получите видео</h3>
+                        <p>Скачайте готовый мультик — делитесь в мессенджерах и соцсетях</p>
+                    </div>
                 </div>
             </div>
+        </section>
+
+        <!-- ===== EXAMPLES ===== -->
+        <section class="examples" id="examples">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="text-gradient">Что умеет ваш мультик</h2>
+                    <p>Три любимых сценария наших родителей</p>
+                </div>
+
+                <div class="examples-grid">
+                    <div class="example-card glass-card reveal reveal-delay-1">
+                        <span class="example-tag">День рождения</span>
+                        <h3>Поздравление от ребёнка</h3>
+                        <p>Малыш сам поздравляет бабушку с юбилеем — она будет в восторге! Тёплые слова голосом любимого внука.</p>
+                    </div>
+                    <div class="example-card glass-card reveal reveal-delay-2">
+                        <span class="example-tag">Стихи</span>
+                        <h3>Ребёнок читает стихи</h3>
+                        <p>Любимое стихотворение в исполнении вашего малыша — память, которая останется навсегда.</p>
+                    </div>
+                    <div class="example-card glass-card reveal reveal-delay-3">
+                        <span class="example-tag">Сказка</span>
+                        <h3>Герой сказки</h3>
+                        <p>Ребёнок рассказывает собственную историю — как настоящий герой мультфильма на большом экране.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FEATURES ===== -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="text-gradient">Возможности</h2>
+                    <p>Технологии, которые делают мультик особенным</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card glass-card reveal reveal-delay-1">
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 3a4.5 4.5 0 0 0-4.5 4.5c0 1.5.7 2.8 1.8 3.6A5.5 5.5 0 0 0 6.5 16c0 3 2.5 5 5.5 5s5.5-2 5.5-5a5.5 5.5 0 0 0-2.8-4.9 4.5 4.5 0 0 0 1.8-3.6A4.5 4.5 0 0 0 12 3z"/></svg>
+                        </div>
+                        <h3>AI-анимация лица</h3>
+                        <p>Нейросеть оживляет фото: ребёнок моргает, улыбается, говорит — как настоящий герой мультфильма</p>
+                    </div>
+                    <div class="feature-card glass-card reveal reveal-delay-2">
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                        </div>
+                        <h3>Голосовая озвучка</h3>
+                        <p>Выберите детский голос или загрузите свою запись — AI синхронизирует движение губ</p>
+                    </div>
+                    <div class="feature-card glass-card reveal reveal-delay-3">
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                        </div>
+                        <h3>Музыка и звуки</h3>
+                        <p>Библиотека атмосферных треков: от нежных колыбельных до весёлых приключений</p>
+                    </div>
+                    <div class="feature-card glass-card reveal reveal-delay-1">
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                        </div>
+                        <h3>Готовые сценарии</h3>
+                        <p>Поздравления, стихи, сказки — или напишите свой уникальный текст</p>
+                    </div>
+                    <div class="feature-card glass-card reveal reveal-delay-2">
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                        </div>
+                        <h3>Удобный формат</h3>
+                        <p>MP4-видео идеально для WhatsApp, Telegram и соцсетей — делитесь одним кликом</p>
+                    </div>
+                    <div class="feature-card glass-card reveal reveal-delay-3">
+                        <div class="line-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </div>
+                        <h3>Безопасность</h3>
+                        <p>Фото обрабатываются и сразу удаляются. Мы не храним данные ваших детей</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PRICING ===== -->
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="text-gradient">Тарифы</h2>
+                    <p>Выберите подходящий вариант</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <div class="pricing-card reveal reveal-delay-1">
+                        <div class="pricing-title">Пробный</div>
+                        <div class="pricing-desc">Познакомьтесь с возможностями</div>
+                        <div class="pricing-price">0 <span>руб.</span></div>
+                        <ul class="pricing-features">
+                            <li>1 бесплатный мультик</li>
+                            <li>Длительность до 15 сек</li>
+                            <li>AI-озвучка голосом</li>
+                            <li>Фоновая музыка</li>
+                            <li>Водяной знак</li>
+                        </ul>
+                        <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Попробовать</a>
+                    </div>
+
+                    <div class="pricing-card featured reveal reveal-delay-2">
+                        <div class="pricing-badge">Популярный</div>
+                        <div class="pricing-title">Стандарт</div>
+                        <div class="pricing-desc">Для особых моментов</div>
+                        <div class="pricing-price">490 <span>руб.</span></div>
+                        <ul class="pricing-features">
+                            <li>1 мультик до 60 сек</li>
+                            <li>Без водяного знака</li>
+                            <li>Любой сценарий</li>
+                            <li>Выбор голоса</li>
+                            <li>HD-качество</li>
+                        </ul>
+                        <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
+                    </div>
+
+                    <div class="pricing-card reveal reveal-delay-3">
+                        <div class="pricing-title">Пакет</div>
+                        <div class="pricing-desc">Для тех, кто хочет больше</div>
+                        <div class="pricing-price">1 490 <span>руб.</span></div>
+                        <ul class="pricing-features">
+                            <li>5 мультиков</li>
+                            <li>Всё из тарифа Стандарт</li>
+                            <li>Приоритетная генерация</li>
+                            <li>Бонус: +1 мультик</li>
+                            <li>Поддержка в Telegram</li>
+                        </ul>
+                        <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== REVIEWS ===== -->
+        <section class="reviews" id="reviews">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="text-gradient">Отзывы родителей</h2>
+                    <p>Настоящие эмоции наших семей</p>
+                </div>
+            </div>
+
+            <div class="reviews-scroll">
+                <div class="review-card">
+                    <div>
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">«Дочка поздравила бабушку с днём рождения — та плакала от счастья! Мультик смотрим всей семьёй уже десятый раз.»</p>
+                    </div>
+                    <div class="review-author">— Ольга, мама Алисы (4 года)</div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">«Сын "читает" стихи Пушкина. Теперь это наше семейное сокровище. Спасибо за такую магию!»</p>
+                    </div>
+                    <div class="review-author">— Михаил, папа Артёма (6 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">«Отправила видео с поздравлением мужу на работу — коллеги были в шоке, что ребёнок сам говорит!»</p>
+                    </div>
+                    <div class="review-author">— Анна, мама Маши (3 года)</div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">«Сделали целую серию мультиков на Новый год — теперь все родственники ждут поздравлений от внуков!»</p>
+                    </div>
+                    <div class="review-author">— Елена, бабушка</div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">«Качество озвучки поразило. Голос реально детский, губы синхронизированы. Технологии!»</p>
+                    </div>
+                    <div class="review-author">— Дмитрий, папа Никиты (5 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div>
+                        <div class="review-stars">★★★★★</div>
+                        <p class="review-text">«Дочка в восторге — теперь просит "ещё мультик про себя"! Отличный подарок на любой праздник.»</p>
+                    </div>
+                    <div class="review-author">— Ирина, мама Софии (4 года)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section class="faq" id="faq">
+            <div class="container">
+                <div class="section-header reveal">
+                    <h2 class="text-gradient">Частые вопросы</h2>
+                </div>
+
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Как загрузить фото?</span>
+                            <span class="faq-icon"></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Просто отправьте фото ребёнка боту в Telegram. Лучше всего подходит фото анфас с хорошим освещением, где видно лицо целиком. Бот сам подскажет, если нужно другое фото.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Сколько времени занимает создание мультика?</span>
+                            <span class="faq-icon"></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Обычно 3-5 минут. В пиковые часы может быть немного дольше, но мы всегда уведомим вас, когда видео будет готово.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Можно написать свой текст?</span>
+                            <span class="faq-icon"></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Да! Вы можете выбрать готовый сценарий (поздравления, стихи, сказки) или написать свой собственный текст. AI озвучит любой текст детским голосом.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Безопасно ли загружать фото ребёнка?</span>
+                            <span class="faq-icon"></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Абсолютно. Фото используется только для создания вашего мультика и сразу удаляется после обработки. Мы не храним данные и не передаём их третьим лицам.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Как оплатить?</span>
+                            <span class="faq-icon"></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Оплата происходит прямо в Telegram через безопасный платёжный шлюз. Принимаем карты Visa, MasterCard, МИР и СБП.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">
+                            <span>Можно ли вернуть деньги?</span>
+                            <span class="faq-icon"></span>
+                        </button>
+                        <div class="faq-answer">
+                            <p>Если результат вас не устроит — напишите в поддержку, мы переделаем мультик бесплатно или вернём деньги. Ваше удовольствие — наш приоритет.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FINAL CTA ===== -->
+        <section class="final-cta">
+            <div class="container">
+                <h2 class="text-gradient reveal">Подарите ребёнку<br>его собственный мультик</h2>
+                <p class="reveal reveal-delay-1">Первый мультик — бесплатно. Попробуйте прямо сейчас!</p>
+                <div class="reveal reveal-delay-2">
+                    <a href="https://t.me/Vashmult_bot" class="cta-btn" target="_blank" rel="noopener">
+                        Создать мультик в Telegram
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sticky Mobile CTA -->
+        <div class="sticky-cta" id="stickyCta">
+            <a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Создать мультик бесплатно</a>
         </div>
-    </section>
 
-    <!-- XXL Kinetic Divider -->
-    <div class="xxl-divider" aria-hidden="true">
-        <div class="xxl-word">МУЛЬТИК</div>
-    </div>
-
-    <!-- Wave Divider -->
-    <div class="wave-divider">
-        <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
-            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#1A1432"/>
-        </svg>
-    </div>
-
-    <!-- Features -->
-    <section class="features" id="features">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2><span class="text-gradient">Возможности</span></h2>
-                <p>Технологии, которые делают мультик особенным</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card reveal reveal-delay-1">
-                    <span class="feature-icon">&#129504;</span>
-                    <h3>AI-анимация лица</h3>
-                    <p>Нейросеть оживляет фото: ребёнок моргает, улыбается, говорит — как настоящий</p>
+        <!-- ===== FOOTER ===== -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>Ваш Мульт</h3>
+                    <p>Telegram-бот для создания персональных анимационных видео из фотографий. Оживляем моменты с 2024 года.</p>
                 </div>
-                <div class="feature-card reveal reveal-delay-2">
-                    <span class="feature-icon">&#127897;</span>
-                    <h3>Голосовая озвучка</h3>
-                    <p>Выберите детский голос или загрузите свою запись — AI синхронизирует губы</p>
-                </div>
-                <div class="feature-card reveal reveal-delay-3">
-                    <span class="feature-icon">&#127926;</span>
-                    <h3>Музыка и звуки</h3>
-                    <p>Библиотека атмосферных треков: от нежных колыбельных до весёлых приключений</p>
-                </div>
-                <div class="feature-card reveal reveal-delay-1">
-                    <span class="feature-icon">&#127912;</span>
-                    <h3>Готовые сценарии</h3>
-                    <p>Поздравления, стихи, сказки — или напишите свой уникальный текст</p>
-                </div>
-                <div class="feature-card reveal reveal-delay-2">
-                    <span class="feature-icon">&#128241;</span>
-                    <h3>Удобный формат</h3>
-                    <p>MP4-видео идеально для WhatsApp, Telegram, Instagram — делитесь одним кликом</p>
-                </div>
-                <div class="feature-card reveal reveal-delay-3">
-                    <span class="feature-icon">&#128272;</span>
-                    <h3>Безопасность</h3>
-                    <p>Фото обрабатываются и сразу удаляются. Мы не храним данные ваших детей</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Wave Divider Inverted -->
-    <div class="wave-divider" style="transform: rotate(180deg); margin-top: -1px;">
-        <svg viewBox="0 0 1440 80" fill="none" preserveAspectRatio="none">
-            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#1A1432"/>
-        </svg>
-    </div>
-
-    <!-- Pricing -->
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2><span class="text-gradient">Тарифы</span></h2>
-                <p>Выберите подходящий вариант</p>
-            </div>
-
-            <div class="pricing-grid">
-                <div class="pricing-card reveal reveal-delay-1">
-                    <span class="pricing-icon">&#127775;</span>
-                    <div class="pricing-title">Пробный</div>
-                    <div class="pricing-desc">Познакомьтесь с возможностями</div>
-                    <div class="pricing-price">0 <span>руб.</span></div>
-                    <ul class="pricing-features">
-                        <li>1 бесплатный мультик</li>
-                        <li>Длительность до 15 сек</li>
-                        <li>AI-озвучка голосом</li>
-                        <li>Фоновая музыка</li>
-                        <li>Водяной знак</li>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <ul>
+                        <li><a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Бот @Vashmult_bot</a></li>
+                        <li><a href="https://t.me/vashmult_support" target="_blank" rel="noopener">Поддержка</a></li>
                     </ul>
-                    <a href="https://t.me/Vashmult_bot" class="pricing-cta">Попробовать</a>
                 </div>
-
-                <div class="pricing-card featured reveal reveal-delay-2">
-                    <div class="pricing-badge">Популярный</div>
-                    <span class="pricing-icon">&#127752;</span>
-                    <div class="pricing-title">Стандарт</div>
-                    <div class="pricing-desc">Для особых моментов</div>
-                    <div class="pricing-price">490 <span>руб.</span></div>
-                    <ul class="pricing-features">
-                        <li>1 мультик до 60 сек</li>
-                        <li>Без водяного знака</li>
-                        <li>Любой сценарий</li>
-                        <li>Выбор голоса</li>
-                        <li>HD-качество</li>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="#how-it-works">Как это работает</a></li>
+                        <li><a href="#pricing">Тарифы</a></li>
+                        <li><a href="#faq">FAQ</a></li>
                     </ul>
-                    <a href="https://t.me/Vashmult_bot" class="pricing-cta">Заказать</a>
-                </div>
-
-                <div class="pricing-card reveal reveal-delay-3">
-                    <span class="pricing-icon">&#128142;</span>
-                    <div class="pricing-title">Пакет</div>
-                    <div class="pricing-desc">Для тех, кто хочет больше</div>
-                    <div class="pricing-price">1 490 <span>руб.</span></div>
-                    <ul class="pricing-features">
-                        <li>5 мультиков</li>
-                        <li>Всё из тарифа Стандарт</li>
-                        <li>Приоритетная генерация</li>
-                        <li>Бонус: +1 мультик</li>
-                        <li>Поддержка в Telegram</li>
-                    </ul>
-                    <a href="https://t.me/Vashmult_bot" class="pricing-cta">Заказать</a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Reviews -->
-    <section class="reviews" id="reviews">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2><span class="text-gradient">Отзывы родителей</span></h2>
-            </div>
-        </div>
-
-        <div class="reviews-scroll">
-            <div class="review-card">
-                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <p class="review-text">Дочка поздравила бабушку с днём рождения — та плакала от счастья! Мультик смотрим всей семьёй уже десятый раз.</p>
-                <div class="review-author">— Ольга, мама Алисы (4 года)</div>
-            </div>
-            <div class="review-card">
-                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <p class="review-text">Сын "читает" стихи Пушкина. Теперь это наше семейное сокровище. Спасибо за такую магию!</p>
-                <div class="review-author">— Михаил, папа Артёма (6 лет)</div>
-            </div>
-            <div class="review-card">
-                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <p class="review-text">Отправила видео с поздравлением мужу на работу — коллеги были в шоке, что ребёнок сам говорит!</p>
-                <div class="review-author">— Анна, мама Маши (3 года)</div>
-            </div>
-            <div class="review-card">
-                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <p class="review-text">Сделали целую серию мультиков на Новый год — теперь все родственники ждут поздравлений от внуков!</p>
-                <div class="review-author">— Елена, бабушка</div>
-            </div>
-            <div class="review-card">
-                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <p class="review-text">Качество озвучки поразило. Голос реально детский, губы синхронизированы. Технологии!</p>
-                <div class="review-author">— Дмитрий, папа Никиты (5 лет)</div>
-            </div>
-            <div class="review-card">
-                <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                <p class="review-text">Дочка в восторге — теперь просит "ещё мультик про себя"! Отличный подарок на любой праздник.</p>
-                <div class="review-author">— Ирина, мама Софии (4 года)</div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="faq" id="faq">
-        <div class="container">
-            <div class="section-header reveal">
-                <h2><span class="text-gradient">Частые вопросы</span></h2>
-            </div>
-
-            <div class="faq-list">
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        <span>Как загрузить фото?</span>
-                        <span class="faq-icon"></span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Просто отправьте фото ребёнка боту в Telegram. Лучше всего подходит фото анфас с хорошим освещением, где видно лицо целиком. Бот сам подскажет, если нужно другое фото.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        <span>Сколько времени занимает создание мультика?</span>
-                        <span class="faq-icon"></span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Обычно 3-5 минут. В пиковые часы может быть немного дольше, но мы всегда уведомим вас, когда видео будет готово.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        <span>Можно написать свой текст?</span>
-                        <span class="faq-icon"></span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Да! Вы можете выбрать готовый сценарий (поздравления, стихи, сказки) или написать свой собственный текст. AI озвучит любой текст детским голосом.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        <span>Безопасно ли загружать фото ребёнка?</span>
-                        <span class="faq-icon"></span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Абсолютно. Фото используется только для создания вашего мультика и сразу удаляется после обработки. Мы не храним данные и не передаём их третьим лицам.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        <span>Как оплатить?</span>
-                        <span class="faq-icon"></span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Оплата происходит прямо в Telegram через безопасный платёжный шлюз. Принимаем карты Visa, MasterCard, МИР и СБП.</p>
-                    </div>
-                </div>
-                <div class="faq-item reveal">
-                    <button class="faq-question">
-                        <span>Можно ли вернуть деньги?</span>
-                        <span class="faq-icon"></span>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Если результат вас не устроит — напишите в поддержку, мы переделаем мультик бесплатно или вернём деньги. Ваше удовольствие — наш приоритет.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Final CTA -->
-    <section class="final-cta">
-        <div class="ambient-orb"></div>
-        <div class="container">
-            <h2 class="reveal"><span class="text-gradient">Подарите ребёнку</span><br>его собственный мультик</h2>
-            <p class="reveal">Первый мультик — бесплатно. Попробуйте прямо сейчас!</p>
-            <div class="reveal">
-                <a href="https://t.me/Vashmult_bot" class="cta-btn">
-                    Создать мультик
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 12h14M12 5l7 7-7 7"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Sticky Mobile CTA -->
-    <div class="sticky-cta" id="stickyCta">
-        <a href="https://t.me/Vashmult_bot">Создать мультик бесплатно</a>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>Ваш Мульт</h3>
-                <p>Telegram-бот для создания персональных анимационных видео из фотографий. Оживляем моменты с 2024 года.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Контакты</h4>
-                <ul>
-                    <li><a href="https://t.me/Vashmult_bot">Бот @Vashmult_bot</a></li>
-                    <li><a href="https://t.me/vashmult_support">Поддержка</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Информация</h4>
-                <ul>
-                    <li><a href="#how-it-works">Как это работает</a></li>
-                    <li><a href="#pricing">Тарифы</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="footer-legal">
+            <div class="footer-bottom">
                 &copy; 2024-2026 Ваш Мульт. Все права защищены.
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <script>
     (function() {
         'use strict';
 
-        // Check reduced motion preference
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Generate stars
-        const starsContainer = document.getElementById('stars');
+        // Stars
+        var starsContainer = document.getElementById('stars');
         if (starsContainer && !prefersReducedMotion) {
-            const starCount = window.innerWidth < 600 ? 40 : 80;
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
+            var starCount = window.innerWidth < 600 ? 40 : 80;
+            for (var i = 0; i < starCount; i++) {
+                var star = document.createElement('div');
                 star.className = 'star';
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
-                const size = Math.random() * 2.5 + 1;
+                var size = Math.random() * 2 + 1;
                 star.style.width = size + 'px';
                 star.style.height = size + 'px';
                 star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
@@ -1721,171 +1362,52 @@
             }
         }
 
-        // Hero entrance animations
-        function animateHero() {
-            const timeline = [
-                { el: '.hero-badge', delay: 300 },
-                { el: '.hero h1', delay: 500 },
-                { el: '.hero-subtitle', delay: 700 },
-                { el: '.stats-row', delay: 900 },
-                { el: '.hero-cta-wrapper', delay: 1100 },
-                { el: '.hero-note', delay: 1300 },
-                { el: '.hero-trust', delay: 1500 }
-            ];
-
-            timeline.forEach(item => {
-                setTimeout(() => {
-                    const el = document.querySelector(item.el);
-                    if (el) {
-                        el.style.transition = 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
-                        el.style.opacity = '1';
-                        el.style.transform = 'translateY(0)';
+        // Reveal on scroll
+        var revealEls = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window && !prefersReducedMotion) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
                     }
-                }, prefersReducedMotion ? 0 : item.delay);
-            });
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            revealEls.forEach(function(el) { observer.observe(el); });
+        } else {
+            revealEls.forEach(function(el) { el.classList.add('visible'); });
         }
 
-        // Spring counter animation
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-val');
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var item = btn.parentElement;
+                var answer = item.querySelector('.faq-answer');
+                var isOpen = item.classList.contains('open');
 
-            counters.forEach(counter => {
-                const target = parseFloat(counter.dataset.count);
-                const decimals = counter.dataset.dec ? parseInt(counter.dataset.dec) : 0;
-                const suffix = counter.dataset.suffix || '';
-                const duration = 2000;
-                const startTime = performance.now();
+                document.querySelectorAll('.faq-item.open').forEach(function(openItem) {
+                    openItem.classList.remove('open');
+                    openItem.querySelector('.faq-answer').style.maxHeight = '0';
+                });
 
-                function easeOutElastic(x) {
-                    const c4 = (2 * Math.PI) / 3;
-                    return x === 0 ? 0 : x === 1 ? 1 :
-                        Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1;
-                }
-
-                function update(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    const eased = easeOutElastic(progress);
-                    const current = target * eased;
-
-                    if (decimals > 0) {
-                        counter.textContent = current.toFixed(decimals) + suffix;
-                    } else {
-                        counter.textContent = Math.floor(current) + suffix;
-                    }
-
-                    if (progress < 1) {
-                        requestAnimationFrame(update);
-                    }
-                }
-
-                requestAnimationFrame(update);
-            });
-        }
-
-        // Intersection Observer for reveal animations
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-
-                    // Trigger counter animation when stats row becomes visible
-                    if (entry.target.classList.contains('stats-row') ||
-                        entry.target.closest('.stats-row')) {
-                        animateCounters();
-                    }
-                }
-            });
-        }, {
-            threshold: 0.12,
-            rootMargin: '0px 0px -60px 0px'
-        });
-
-        document.querySelectorAll('.reveal, .section-header').forEach(el => {
-            revealObserver.observe(el);
-        });
-
-        // FAQ Accordion
-        document.querySelectorAll('.faq-question').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const item = btn.parentElement;
-                const wasActive = item.classList.contains('active');
-
-                // Close all
-                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
-
-                // Open clicked if wasn't active
-                if (!wasActive) {
-                    item.classList.add('active');
+                if (!isOpen) {
+                    item.classList.add('open');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
                 }
             });
         });
 
         // Sticky CTA on mobile
-        const stickyCta = document.getElementById('stickyCta');
-        if (stickyCta) {
-            let ticking = false;
-
-            window.addEventListener('scroll', () => {
-                if (!ticking) {
-                    requestAnimationFrame(() => {
-                        if (window.scrollY > 650) {
-                            stickyCta.classList.add('visible');
-                        } else {
-                            stickyCta.classList.remove('visible');
-                        }
-                        ticking = false;
-                    });
-                    ticking = true;
+        var stickyCta = document.getElementById('stickyCta');
+        if (stickyCta && window.innerWidth <= 768) {
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 600) {
+                    stickyCta.classList.add('visible');
+                } else {
+                    stickyCta.classList.remove('visible');
                 }
-            });
+            }, { passive: true });
         }
-
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: prefersReducedMotion ? 'auto' : 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Magnetic button effect (desktop only)
-        if (!prefersReducedMotion && window.innerWidth > 768) {
-            document.querySelectorAll('.cta-btn').forEach(btn => {
-                btn.addEventListener('mousemove', (e) => {
-                    const rect = btn.getBoundingClientRect();
-                    const x = e.clientX - rect.left - rect.width / 2;
-                    const y = e.clientY - rect.top - rect.height / 2;
-                    btn.style.transform = `translateY(-4px) translate(${x * 0.15}px, ${y * 0.15}px)`;
-                });
-
-                btn.addEventListener('mouseleave', () => {
-                    btn.style.transform = '';
-                });
-            });
-        }
-
-        // Initialize hero animations
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', animateHero);
-        } else {
-            animateHero();
-        }
-
-        // Preload optimizations
-        if ('connection' in navigator) {
-            if (navigator.connection.saveData || navigator.connection.effectiveType === 'slow-2g') {
-                document.querySelector('.gradient-blob').style.animation = 'none';
-            }
-        }
-
     })();
     </script>
 </body>
