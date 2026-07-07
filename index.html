@@ -5,46 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ваш Мульт — Персональный мультфильм из фото вашего ребёнка</title>
     <meta name="description" content="Telegram-бот создаёт волшебное анимационное видео из одной фотографии: ребёнок двигается, говорит, а на фоне играет музыка. Готово за 5 минут.">
-    <meta name="theme-color" content="#0a0a12">
+    <meta name="theme-color" content="#190922">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
 
-    <style>
-        @font-face {
-            font-family: 'Playfair Display';
-            src: url('assets/fonts/PlayfairDisplay-Regular.woff2') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Playfair Display';
-            src: url('assets/fonts/PlayfairDisplay-Bold.woff2') format('woff2');
-            font-weight: 700;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Inter';
-            src: url('assets/fonts/Inter-Regular.woff2') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Inter';
-            src: url('assets/fonts/Inter-Medium.woff2') format('woff2');
-            font-weight: 500;
-            font-style: normal;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Inter';
-            src: url('assets/fonts/Inter-SemiBold.woff2') format('woff2');
-            font-weight: 600;
-            font-style: normal;
-            font-display: swap;
-        }
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 
+    <style>
         *, *::before, *::after {
             margin: 0;
             padding: 0;
@@ -52,16 +20,35 @@
         }
 
         :root {
-            --color-bg: #0a0a12;
-            --color-bg-warm: #12101a;
-            --color-cream: #faf6f0;
-            --color-gold: #d4a853;
-            --color-gold-light: #f0d48a;
-            --color-text: #e8e4dc;
-            --color-text-muted: #9a9590;
-            --color-accent: #7c5ce7;
-            --font-display: 'Playfair Display', Georgia, serif;
-            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            /* Canvas & neutrals */
+            --cream: #f8f7f2;
+            --linen: #edeae4;
+            --paper: #ffffff;
+            --ink: #1d1d1c;
+            --charcoal: #43423e;
+            --slate: #7a7974;
+            --ash: #99978f;
+            --sand: #d8d6ce;
+            /* Twilight & accents */
+            --twilight: #190922;
+            --violet: #b26bf5;
+            --violet-deep: #8200db;
+            --lilac: #f3e8ff;
+            --pale-violet: #dab2ff;
+            --pink: #f788d2;
+            --coral: #ee5968;
+            --tangerine: #ff9147;
+            --aqua: #4ad5e8;
+            --sky: #51b1fb;
+            --sunshine: #ffe747;
+            --mint: #58df8c;
+            --mint-wash: #dcfce7;
+
+            --font-display: 'DM Serif Display', Georgia, serif;
+            --font-body: 'Nunito Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+            --shadow-card: 0 1px 2px rgba(60, 55, 40, 0.05), 0 3px 6px rgba(60, 55, 40, 0.05), 0 12px 24px rgba(60, 55, 40, 0.07);
+            --shadow-float: 0 2px 4px rgba(40, 20, 60, 0.08), 0 6px 12px rgba(40, 20, 60, 0.08), 0 24px 48px rgba(40, 20, 60, 0.16);
         }
 
         html {
@@ -70,45 +57,25 @@
 
         body {
             font-family: var(--font-body);
-            background: var(--color-bg);
-            color: var(--color-text);
-            line-height: 1.6;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.5;
+            letter-spacing: -0.011em;
             overflow-x: hidden;
         }
 
-        .wrapper {
-            width: 100%;
-            overflow: hidden;
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            line-height: 1.2;
         }
 
-        /* Stars background */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle var(--duration, 3s) ease-in-out infinite;
-            animation-delay: var(--delay, 0s);
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
+        h1 { font-size: clamp(2.6rem, 7vw, 4.2rem); letter-spacing: -0.023em; }
+        h2 { font-size: clamp(2rem, 5vw, 3rem); letter-spacing: -0.013em; }
+        h3 { font-size: clamp(1.3rem, 3vw, 1.6rem); letter-spacing: -0.01em; }
 
         section {
-            position: relative;
-            z-index: 1;
-            padding: 100px 24px;
+            padding: 96px 24px;
         }
 
         .container {
@@ -116,39 +83,23 @@
             margin: 0 auto;
         }
 
-        h1, h2, h3 {
-            font-family: var(--font-display);
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); }
-        h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
-        h3 { font-size: clamp(1.15rem, 3vw, 1.5rem); }
-
-        .text-gradient {
-            background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 50%, var(--color-cream) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
         .section-header {
             text-align: center;
-            margin-bottom: 64px;
+            max-width: 640px;
+            margin: 0 auto 56px;
         }
 
         .section-header p {
-            margin-top: 16px;
-            color: var(--color-text-muted);
+            margin-top: 14px;
+            color: var(--slate);
             font-size: 1.125rem;
         }
 
         /* Reveal on scroll */
         .reveal {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(28px);
+            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .reveal.visible {
@@ -156,398 +107,592 @@
             transform: translateY(0);
         }
 
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-        .reveal-delay-4 { transition-delay: 0.4s; }
+        .reveal-delay-1 { transition-delay: 0.08s; }
+        .reveal-delay-2 { transition-delay: 0.16s; }
+        .reveal-delay-3 { transition-delay: 0.24s; }
+        .reveal-delay-4 { transition-delay: 0.32s; }
 
-        /* CTA button */
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 18px 40px;
-            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
-            color: var(--color-bg);
-            font-family: var(--font-body);
-            font-size: 1.125rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 60px;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 30px rgba(212, 168, 83, 0.3);
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 40px rgba(212, 168, 83, 0.5);
-        }
-
-        .cta-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Glass card base */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            transition: transform 0.4s ease, border-color 0.4s ease;
-        }
-
-        .glass-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(212, 168, 83, 0.3);
-        }
-
-        /* Gold line icon */
-        .line-icon {
-            width: 48px;
-            height: 48px;
+        /* Buttons */
+        .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
-            background: rgba(212, 168, 83, 0.08);
-            border: 1px solid rgba(212, 168, 83, 0.2);
-            margin-bottom: 20px;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
         }
 
-        .line-icon svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--color-gold);
-            fill: none;
-            stroke-width: 1.6;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .btn svg {
+            width: 18px;
+            height: 18px;
         }
 
-        /* ===== HERO ===== */
+        .btn-white {
+            background: var(--paper);
+            color: var(--ink);
+            box-shadow: 0 1px 2px rgba(25, 9, 34, 0.2), 0 4px 10px rgba(25, 9, 34, 0.15), 0 12px 24px rgba(25, 9, 34, 0.15);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(25, 9, 34, 0.2), 0 8px 16px rgba(25, 9, 34, 0.18), 0 20px 40px rgba(25, 9, 34, 0.2);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .btn-ink {
+            background: var(--ink);
+            color: var(--cream);
+            box-shadow: var(--shadow-card);
+        }
+
+        .btn-ink:hover {
+            transform: translateY(-2px);
+            background: #000;
+            box-shadow: 0 2px 4px rgba(60, 55, 40, 0.08), 0 8px 16px rgba(60, 55, 40, 0.1), 0 20px 40px rgba(60, 55, 40, 0.12);
+        }
+
+        /* ===== HERO — twilight sunset ===== */
         .hero {
+            position: relative;
             min-height: 100vh;
+            padding: 90px 24px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             text-align: center;
-            position: relative;
             overflow: hidden;
-            padding-top: 120px;
+            color: #fff;
+            background: linear-gradient(180deg,
+                #190922 0%,
+                #23103a 34%,
+                #4b1e78 54%,
+                #8b45c9 68%,
+                #c96bc0 78%,
+                #ee7e93 86%,
+                #ff9147 96%,
+                #ffb257 100%);
         }
 
-        .hero::before {
-            content: '';
+        .hero-stars {
             position: absolute;
-            width: 900px;
-            height: 900px;
-            top: -350px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: radial-gradient(circle, rgba(124, 92, 231, 0.12) 0%, rgba(212, 168, 83, 0.05) 40%, transparent 70%);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55%;
             pointer-events: none;
         }
+
+        .hero-star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle var(--duration, 3s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.25; }
+            50% { opacity: 0.9; }
+        }
+
+        .hero-cloud {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        .cloud-1 { width: 420px; height: 120px; left: -8%; bottom: 26%; background: #f0a0c0; }
+        .cloud-2 { width: 520px; height: 140px; right: -10%; bottom: 20%; background: #ffb08a; opacity: 0.45; }
+        .cloud-3 { width: 340px; height: 100px; left: 22%; bottom: 14%; background: #ffd0a0; opacity: 0.4; }
 
         .hero-badge {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px 22px;
-            border: 1px solid rgba(212, 168, 83, 0.3);
-            border-radius: 60px;
+            gap: 9px;
+            padding: 8px 18px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
             font-size: 0.875rem;
-            font-weight: 500;
-            letter-spacing: 0.06em;
-            color: var(--color-gold-light);
-            background: rgba(212, 168, 83, 0.06);
-            margin-bottom: 32px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 28px;
+            backdrop-filter: blur(6px);
         }
 
         .hero-badge-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: var(--color-gold);
-            box-shadow: 0 0 12px var(--color-gold);
-            animation: pulse-dot 2.5s ease-in-out infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+            background: var(--sunshine);
+            box-shadow: 0 0 10px var(--sunshine);
         }
 
         .hero h1 {
-            max-width: 900px;
-            margin: 0 auto 28px;
+            max-width: 820px;
+            margin: 0 auto 22px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-subtitle {
-            max-width: 620px;
-            margin: 0 auto 40px;
-            font-size: clamp(1.05rem, 2.5vw, 1.25rem);
-            color: var(--color-text-muted);
+            max-width: 580px;
+            margin: 0 auto 36px;
+            font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+            color: rgba(255, 255, 255, 0.82);
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-note {
-            margin-top: 20px;
+            margin-top: 18px;
             font-size: 0.9rem;
-            color: var(--color-text-muted);
+            color: rgba(255, 255, 255, 0.65);
+            position: relative;
+            z-index: 2;
         }
 
-        .hero-trust {
+        /* Floating cards stack */
+        .hero-float-stack {
+            position: relative;
+            z-index: 2;
+            width: min(860px, 94vw);
+            margin: 64px auto -40px;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 36px;
-        }
-
-        .trust-badge {
-            padding: 9px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 60px;
-            font-size: 0.85rem;
-            color: var(--color-text-muted);
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        /* Cinema screen visual */
-        .hero-screen {
-            width: min(680px, 92vw);
-            margin: 64px auto 40px;
-            position: relative;
-        }
-
-        .hero-screen-frame {
-            position: relative;
-            border-radius: 20px;
-            border: 1px solid rgba(212, 168, 83, 0.25);
-            background: linear-gradient(160deg, #16131f 0%, #0d0b16 60%, #12101a 100%);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(212, 168, 83, 0.08);
-            padding: 14px;
-        }
-
-        .hero-screen-inner {
-            position: relative;
-            aspect-ratio: 16 / 9;
-            border-radius: 12px;
-            overflow: hidden;
-            background:
-                radial-gradient(ellipse 90% 70% at 50% 100%, rgba(124, 92, 231, 0.25) 0%, transparent 60%),
-                radial-gradient(ellipse 70% 60% at 50% 0%, rgba(212, 168, 83, 0.18) 0%, transparent 55%),
-                linear-gradient(180deg, #191527 0%, #0e0c18 100%);
-            display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
         }
 
-        .hero-screen-inner::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle at 18% 30%, rgba(255,255,255,0.7) 1px, transparent 1.6px),
-                radial-gradient(circle at 72% 22%, rgba(255,255,255,0.5) 1px, transparent 1.6px),
-                radial-gradient(circle at 85% 60%, rgba(255,255,255,0.6) 1px, transparent 1.6px),
-                radial-gradient(circle at 35% 70%, rgba(255,255,255,0.4) 1px, transparent 1.6px),
-                radial-gradient(circle at 55% 40%, rgba(255,255,255,0.5) 1px, transparent 1.6px);
-        }
-
-        .hero-play {
-            position: relative;
-            width: 84px;
-            height: 84px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 40px rgba(212, 168, 83, 0.45);
-            animation: play-pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes play-pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 8px 40px rgba(212, 168, 83, 0.45); }
-            50% { transform: scale(1.06); box-shadow: 0 8px 60px rgba(212, 168, 83, 0.65); }
-        }
-
-        .hero-play svg {
-            width: 30px;
-            height: 30px;
-            fill: var(--color-bg);
-            margin-left: 5px;
-        }
-
-        .hero-screen-caption {
-            position: absolute;
-            left: 28px;
-            bottom: 28px;
+        .float-card {
+            background: var(--paper);
+            border-radius: 16px;
+            box-shadow: var(--shadow-float);
             text-align: left;
         }
 
-        .hero-screen-caption .cap-title {
-            font-family: var(--font-display);
-            font-size: 1.05rem;
-            color: var(--color-cream);
+        .float-main {
+            width: min(480px, 88vw);
+            padding: 14px;
+            position: relative;
+            z-index: 3;
         }
 
-        .hero-screen-caption .cap-sub {
-            font-size: 0.8rem;
-            color: var(--color-text-muted);
-        }
-
-        .hero-stats {
+        .float-main-screen {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            border-radius: 10px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse 80% 90% at 50% 110%, rgba(255, 145, 71, 0.55) 0%, transparent 60%),
+                radial-gradient(ellipse 90% 80% at 50% -20%, rgba(178, 107, 245, 0.5) 0%, transparent 60%),
+                linear-gradient(180deg, #2d1140 0%, #6b2fa0 60%, #c96b8a 100%);
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: clamp(32px, 8vw, 80px);
-            margin-top: 8px;
         }
 
-        .hero-stat {
-            text-align: center;
+        .float-play {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 24px rgba(25, 9, 34, 0.35);
         }
 
-        .hero-stat .stat-val {
-            font-family: var(--font-display);
-            font-size: clamp(1.8rem, 4vw, 2.6rem);
+        .float-play svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--ink);
+            margin-left: 4px;
+        }
+
+        .float-main-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 6px 4px;
+        }
+
+        .float-main-meta .meta-title {
             font-weight: 700;
-            color: var(--color-gold);
+            font-size: 0.95rem;
+            color: var(--ink);
         }
 
-        .hero-stat .stat-lbl {
+        .float-main-meta .meta-sub {
+            font-size: 0.8rem;
+            color: var(--ash);
+        }
+
+        .meta-chip {
+            padding: 5px 12px;
+            border-radius: 9999px;
+            background: var(--lilac);
+            color: var(--violet-deep);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .float-side {
+            padding: 16px;
+            position: absolute;
+            z-index: 2;
+        }
+
+        .float-chat {
+            left: max(0px, calc(50% - 430px));
+            bottom: 60px;
+            width: 220px;
+            transform: rotate(-3deg);
+        }
+
+        .float-music {
+            right: max(0px, calc(50% - 430px));
+            bottom: 76px;
+            width: 210px;
+            transform: rotate(2.5deg);
+        }
+
+        .chat-bubble {
+            padding: 9px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+
+        .chat-in {
+            background: var(--linen);
+            color: var(--charcoal);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-out {
+            background: var(--lilac);
+            color: var(--violet-deep);
+            border-bottom-right-radius: 4px;
+            margin-left: 24px;
+            font-weight: 600;
+        }
+
+        .music-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .music-icon {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            background: var(--mint-wash);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-icon svg {
+            width: 18px;
+            height: 18px;
+            stroke: #00a63e;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .music-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .music-sub {
+            font-size: 0.72rem;
+            color: var(--ash);
+        }
+
+        .music-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 22px;
+            margin-top: 10px;
+        }
+
+        .music-bars span {
+            flex: 1;
+            border-radius: 3px;
+            background: linear-gradient(180deg, var(--violet), var(--pink));
+            animation: bounce 1.2s ease-in-out infinite;
+            animation-delay: calc(var(--i) * 0.09s);
+        }
+
+        @keyframes bounce {
+            0%, 100% { height: 30%; }
+            50% { height: 100%; }
+        }
+
+        @media (max-width: 900px) {
+            .float-chat, .float-music { display: none; }
+        }
+
+        /* Hero base fade into cream */
+        .hero-bottom-fade {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 90px;
+            background: linear-gradient(180deg, transparent, var(--cream));
+            z-index: 1;
+        }
+
+        /* ===== STATS STRIP ===== */
+        .stats-strip {
+            padding: 96px 24px 40px;
+        }
+
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 12px;
+            padding: 20px 36px;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+        }
+
+        .stat-val {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            color: var(--ink);
+            line-height: 1.1;
+        }
+
+        .stat-lbl {
             font-size: 0.85rem;
-            color: var(--color-text-muted);
-            letter-spacing: 0.04em;
+            color: var(--slate);
+            font-weight: 600;
         }
 
-        /* ===== HOW IT WORKS ===== */
-        .how-it-works {
-            background: var(--color-bg-warm);
-        }
-
+        /* ===== HOW IT WORKS — rainbow cards ===== */
         .steps {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 24px;
+            gap: 20px;
         }
 
         .step {
-            padding: 36px 28px;
-            position: relative;
+            border-radius: 16px;
+            padding: 28px 24px;
+            color: var(--ink);
+            transition: transform 0.3s ease;
         }
 
-        .step-number {
-            position: absolute;
-            top: 24px;
-            right: 28px;
-            font-family: var(--font-display);
-            font-size: 2.6rem;
+        .step:hover {
+            transform: translateY(-6px) rotate(-0.5deg);
+        }
+
+        .step-1 { background: var(--pale-violet); }
+        .step-2 { background: var(--pink); }
+        .step-3 { background: var(--aqua); }
+        .step-4 { background: var(--sunshine); }
+
+        .step-num {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.75);
             font-weight: 700;
-            color: rgba(212, 168, 83, 0.18);
-            line-height: 1;
+            font-size: 0.9rem;
+            margin-bottom: 44px;
         }
 
         .step h3 {
-            margin-bottom: 10px;
-            color: var(--color-cream);
+            margin-bottom: 8px;
         }
 
         .step p {
-            color: var(--color-text-muted);
             font-size: 0.95rem;
+            color: rgba(29, 29, 28, 0.75);
+            font-weight: 600;
         }
 
         /* ===== EXAMPLES ===== */
+        .examples {
+            background: var(--linen);
+        }
+
         .examples-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+            gap: 20px;
         }
 
         .example-card {
-            padding: 36px 28px;
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s ease;
+        }
+
+        .example-card:hover {
+            transform: translateY(-6px);
         }
 
         .example-tag {
             display: inline-block;
-            padding: 6px 16px;
-            border-radius: 60px;
+            padding: 5px 14px;
+            border-radius: 9999px;
             font-size: 0.78rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--color-gold-light);
-            background: rgba(212, 168, 83, 0.1);
-            border: 1px solid rgba(212, 168, 83, 0.2);
-            margin-bottom: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
         }
 
+        .tag-violet { background: var(--lilac); color: var(--violet-deep); }
+        .tag-mint { background: var(--mint-wash); color: #00791f; }
+        .tag-peach { background: #ffe9d8; color: #c2410c; }
+
         .example-card h3 {
-            margin-bottom: 10px;
-            color: var(--color-cream);
+            margin-bottom: 8px;
         }
 
         .example-card p {
-            color: var(--color-text-muted);
+            color: var(--slate);
             font-size: 0.95rem;
         }
 
         /* ===== FEATURES ===== */
-        .features {
-            background: var(--color-bg-warm);
-        }
-
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            gap: 20px;
         }
 
         .feature-card {
-            padding: 36px 28px;
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 12px;
+            padding: 26px 24px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s ease;
         }
 
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .feature-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .fi-violet { background: var(--lilac); } .fi-violet svg { stroke: var(--violet-deep); }
+        .fi-pink { background: #ffe4f4; } .fi-pink svg { stroke: #b036a4; }
+        .fi-sky { background: #e0f0ff; } .fi-sky svg { stroke: #1470c2; }
+        .fi-mint { background: var(--mint-wash); } .fi-mint svg { stroke: #00791f; }
+        .fi-tangerine { background: #ffe9d8; } .fi-tangerine svg { stroke: #c2410c; }
+        .fi-aqua { background: #dcf7fa; } .fi-aqua svg { stroke: #2c91af; }
+
         .feature-card h3 {
-            margin-bottom: 10px;
-            color: var(--color-cream);
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+            font-family: var(--font-body);
+            font-weight: 700;
         }
 
         .feature-card p {
-            color: var(--color-text-muted);
-            font-size: 0.95rem;
+            color: var(--slate);
+            font-size: 0.93rem;
         }
 
         /* ===== PRICING ===== */
+        .pricing {
+            background: var(--linen);
+        }
+
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 24px;
             align-items: stretch;
         }
 
         .pricing-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 44px 36px;
-            text-align: center;
-            position: relative;
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 16px;
+            padding: 36px 30px;
             display: flex;
             flex-direction: column;
-            transition: transform 0.4s ease, border-color 0.4s ease;
+            position: relative;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s ease;
         }
 
         .pricing-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(212, 168, 83, 0.3);
+            transform: translateY(-6px);
         }
 
         .pricing-card.featured {
-            border-color: var(--color-gold);
-            background: linear-gradient(180deg, rgba(212, 168, 83, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 2px solid var(--violet);
+            background: linear-gradient(180deg, var(--lilac) 0%, var(--paper) 42%);
         }
 
         .pricing-badge {
@@ -555,131 +700,125 @@
             top: -14px;
             left: 50%;
             transform: translateX(-50%);
-            padding: 6px 20px;
-            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
-            color: var(--color-bg);
+            padding: 5px 16px;
+            border-radius: 9999px;
+            background: var(--violet);
+            color: #fff;
             font-size: 0.78rem;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            border-radius: 60px;
+            font-weight: 700;
             white-space: nowrap;
         }
 
         .pricing-title {
             font-family: var(--font-display);
             font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--color-cream);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .pricing-desc {
             font-size: 0.9rem;
-            color: var(--color-text-muted);
-            margin-bottom: 24px;
+            color: var(--slate);
+            margin-bottom: 20px;
         }
 
         .pricing-price {
             font-family: var(--font-display);
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--color-gold);
-            margin-bottom: 28px;
+            font-size: 2.9rem;
             line-height: 1;
+            margin-bottom: 24px;
         }
 
         .pricing-price span {
-            font-size: 1.1rem;
-            color: var(--color-text-muted);
             font-family: var(--font-body);
-            font-weight: 400;
+            font-size: 1rem;
+            color: var(--ash);
+            font-weight: 600;
         }
 
         .pricing-features {
             list-style: none;
-            text-align: left;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
             flex-grow: 1;
         }
 
         .pricing-features li {
-            padding: 9px 0 9px 30px;
+            padding: 8px 0 8px 28px;
             position: relative;
-            color: var(--color-text);
             font-size: 0.95rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--charcoal);
+            border-bottom: 1px solid var(--linen);
         }
 
-        .pricing-features li:last-child {
-            border-bottom: none;
-        }
+        .pricing-features li:last-child { border-bottom: none; }
 
         .pricing-features li::before {
             content: '';
             position: absolute;
-            left: 4px;
-            top: 15px;
-            width: 14px;
-            height: 8px;
-            border-left: 2px solid var(--color-gold);
-            border-bottom: 2px solid var(--color-gold);
+            left: 2px;
+            top: 14px;
+            width: 13px;
+            height: 7px;
+            border-left: 2.5px solid var(--mint);
+            border-bottom: 2.5px solid var(--mint);
             transform: rotate(-45deg);
+        }
+
+        .pricing-card.featured .pricing-features li::before {
+            border-color: var(--violet);
         }
 
         .pricing-cta {
             display: block;
-            padding: 15px 32px;
-            border-radius: 60px;
-            font-weight: 600;
+            text-align: center;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-weight: 700;
             font-size: 1rem;
             text-decoration: none;
-            text-align: center;
-            border: 1px solid rgba(212, 168, 83, 0.4);
-            color: var(--color-gold-light);
-            transition: background 0.3s ease, color 0.3s ease, transform 0.3s ease;
+            background: var(--paper);
+            color: var(--ink);
+            border: 1px solid var(--charcoal);
+            transition: background 0.25s ease, transform 0.25s ease, color 0.25s ease;
         }
 
         .pricing-cta:hover {
-            background: rgba(212, 168, 83, 0.1);
+            background: var(--ink);
+            color: var(--cream);
             transform: translateY(-2px);
         }
 
         .pricing-card.featured .pricing-cta {
-            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
-            color: var(--color-bg);
-            border: none;
-            box-shadow: 0 4px 24px rgba(212, 168, 83, 0.3);
+            background: var(--ink);
+            color: var(--cream);
+            border-color: var(--ink);
         }
 
         .pricing-card.featured .pricing-cta:hover {
-            box-shadow: 0 8px 34px rgba(212, 168, 83, 0.45);
+            background: var(--violet-deep);
+            border-color: var(--violet-deep);
         }
 
         /* ===== REVIEWS ===== */
-        .reviews {
-            background: var(--color-bg-warm);
-        }
-
         .reviews-scroll {
             display: flex;
-            gap: 24px;
+            gap: 20px;
             overflow-x: auto;
             padding: 8px 24px 24px;
             scroll-snap-type: x mandatory;
             scrollbar-width: thin;
-            scrollbar-color: rgba(212, 168, 83, 0.3) transparent;
+            scrollbar-color: var(--sand) transparent;
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .review-card {
             flex-shrink: 0;
-            width: 350px;
-            min-height: 220px;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
+            width: 340px;
+            padding: 26px;
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -687,82 +826,81 @@
         }
 
         .review-stars {
-            color: var(--color-gold);
-            font-size: 1.1rem;
+            color: var(--tangerine);
             letter-spacing: 3px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
 
         .review-text {
-            color: var(--color-text);
             font-size: 0.98rem;
-            font-style: italic;
-            margin-bottom: 20px;
+            color: var(--charcoal);
+            margin-bottom: 18px;
         }
 
         .review-author {
-            color: var(--color-text-muted);
             font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--ash);
+        }
+
+        @media (max-width: 768px) {
+            .review-card { width: 290px; padding: 20px; }
         }
 
         /* ===== FAQ ===== */
         .faq-list {
-            max-width: 760px;
+            max-width: 720px;
             margin: 0 auto;
+            background: var(--paper);
+            border: 1px solid var(--sand);
+            border-radius: 16px;
+            padding: 8px 28px;
+            box-shadow: var(--shadow-card);
         }
 
         .faq-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--linen);
         }
+
+        .faq-item:last-child { border-bottom: none; }
 
         .faq-question {
             width: 100%;
-            padding: 24px 0;
+            padding: 20px 0;
             background: none;
             border: none;
             text-align: left;
             font-family: var(--font-body);
-            font-size: 1.125rem;
-            font-weight: 500;
-            color: var(--color-cream);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ink);
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
 
         .faq-icon {
             position: relative;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             flex-shrink: 0;
         }
 
         .faq-icon::before, .faq-icon::after {
             content: '';
             position: absolute;
-            background: var(--color-gold);
+            background: var(--violet-deep);
+            border-radius: 2px;
             transition: transform 0.3s ease;
         }
 
-        .faq-icon::before {
-            top: 8px;
-            left: 0;
-            width: 18px;
-            height: 2px;
-        }
+        .faq-icon::before { top: 7px; left: 0; width: 16px; height: 2px; }
+        .faq-icon::after { top: 0; left: 7px; width: 2px; height: 16px; }
 
-        .faq-icon::after {
-            top: 0;
-            left: 8px;
-            width: 2px;
-            height: 18px;
-        }
-
-        .faq-item.open .faq-icon::after {
-            transform: rotate(90deg);
-        }
+        .faq-item.open .faq-icon::after { transform: rotate(90deg); }
 
         .faq-answer {
             max-height: 0;
@@ -771,39 +909,63 @@
         }
 
         .faq-answer p {
-            padding: 0 0 24px;
-            color: var(--color-text-muted);
+            padding: 0 0 20px;
+            color: var(--slate);
+            font-size: 0.97rem;
         }
 
-        /* ===== FINAL CTA ===== */
+        /* ===== FINAL CTA — paper on sky ===== */
         .final-cta {
+            padding: 40px 24px 96px;
+        }
+
+        .final-cta-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 24px;
+            padding: clamp(56px, 8vw, 96px) 24px;
             text-align: center;
-            padding: 140px 24px;
+            color: #fff;
             position: relative;
             overflow: hidden;
+            background: linear-gradient(180deg,
+                #190922 0%,
+                #2d1140 40%,
+                #6b2fa0 68%,
+                #b26bf5 86%,
+                #ee7e93 100%);
+            box-shadow: var(--shadow-float);
         }
 
-        .final-cta::before {
-            content: '';
+        .final-cta-card h2 {
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .final-cta-card .btn {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-cloud {
             position: absolute;
-            width: 700px;
-            height: 700px;
-            bottom: -400px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: radial-gradient(circle, rgba(212, 168, 83, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(36px);
+            opacity: 0.5;
             pointer-events: none;
         }
 
-        .final-cta h2 {
-            margin-bottom: 20px;
-        }
-
-        .final-cta p {
-            color: var(--color-text-muted);
-            font-size: 1.125rem;
-            margin-bottom: 40px;
-        }
+        .cta-cloud-1 { width: 380px; height: 110px; left: -6%; bottom: 8%; background: #f0a0c0; }
+        .cta-cloud-2 { width: 420px; height: 120px; right: -8%; bottom: 2%; background: #ffb08a; }
 
         /* ===== STICKY MOBILE CTA ===== */
         .sticky-cta {
@@ -811,45 +973,39 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-            background: rgba(10, 10, 18, 0.9);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(212, 168, 83, 0.2);
+            padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+            background: rgba(248, 247, 242, 0.92);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--sand);
             transform: translateY(110%);
             transition: transform 0.4s ease;
             z-index: 50;
             display: none;
         }
 
-        .sticky-cta.visible {
-            transform: translateY(0);
-        }
+        .sticky-cta.visible { transform: translateY(0); }
 
         .sticky-cta a {
             display: block;
             text-align: center;
             padding: 14px;
-            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
-            color: var(--color-bg);
-            font-weight: 600;
-            border-radius: 60px;
+            background: var(--ink);
+            color: var(--cream);
+            font-weight: 700;
+            border-radius: 12px;
             text-decoration: none;
         }
 
         @media (max-width: 768px) {
             .sticky-cta { display: block; }
             section { padding: 72px 20px; }
-            .review-card { width: 290px; padding: 22px; }
-            .hero-screen-caption { left: 18px; bottom: 16px; }
         }
 
         /* ===== FOOTER ===== */
         footer {
-            position: relative;
-            z-index: 1;
-            background: var(--color-bg-warm);
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 64px 24px 32px;
+            background: var(--cream);
+            border-top: 1px solid var(--sand);
+            padding: 56px 24px 28px;
         }
 
         .footer-content {
@@ -857,486 +1013,615 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
-            gap: 48px;
+            gap: 44px;
         }
 
         @media (max-width: 768px) {
-            .footer-content { grid-template-columns: 1fr; gap: 36px; }
+            .footer-content { grid-template-columns: 1fr; gap: 32px; }
         }
 
         .footer-brand h3 {
             font-family: var(--font-display);
-            color: var(--color-gold);
-            margin-bottom: 14px;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
         }
 
         .footer-brand p {
-            color: var(--color-text-muted);
+            color: var(--slate);
             font-size: 0.9rem;
-            max-width: 340px;
+            max-width: 320px;
         }
 
         .footer-col h4 {
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--color-text-muted);
-            margin-bottom: 18px;
+            color: var(--ash);
+            margin-bottom: 16px;
         }
 
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col li {
-            margin-bottom: 12px;
-        }
+        .footer-col ul { list-style: none; }
+        .footer-col li { margin-bottom: 10px; }
 
         .footer-col a {
-            color: var(--color-text);
+            color: var(--charcoal);
             text-decoration: none;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            font-weight: 600;
+            transition: color 0.25s ease;
         }
 
-        .footer-col a:hover {
-            color: var(--color-gold-light);
-        }
+        .footer-col a:hover { color: var(--violet-deep); }
 
         .footer-bottom {
             max-width: 1200px;
-            margin: 48px auto 0;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: var(--color-text-muted);
+            margin: 44px auto 0;
+            padding-top: 20px;
+            border-top: 1px solid var(--linen);
+            color: var(--ash);
             font-size: 0.85rem;
             text-align: center;
         }
 
+        /* ===== SCROLL FX ===== */
+
+        /* 1. Scroll progress bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            z-index: 100;
+            background: linear-gradient(90deg, var(--violet-deep), var(--violet), var(--pink), var(--coral), var(--tangerine));
+            transform-origin: 0 50%;
+            transform: scaleX(0);
+        }
+
+        /* 2-5. Reveal variants */
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.88);
+            transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .reveal-blur {
+            opacity: 0;
+            filter: blur(14px);
+            transform: translateY(24px);
+            transition: opacity 0.9s ease, filter 0.9s ease, transform 0.9s ease;
+        }
+
+        .reveal-left.visible, .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .reveal-blur.visible {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0);
+        }
+
+        /* 6. Rainbow steps: tumble-in with spring */
+        .step.fx-tumble {
+            opacity: 0;
+            transform: translateY(52px) rotate(var(--tilt, -5deg)) scale(0.85);
+            transition: opacity 0.75s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.75s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .step.fx-tumble.visible {
+            opacity: 1;
+            transform: translateY(0) rotate(0deg) scale(1);
+        }
+
+        /* 7. Section headings: word-by-word rise */
+        .split-word {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+
+        .split-word > span {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+            transition-delay: calc(var(--wi) * 0.08s);
+        }
+
+        .split-ready.visible .split-word > span {
+            transform: translateY(0);
+        }
+
+        /* 8. Price pop with spring overshoot */
+        @keyframes price-pop {
+            0% { transform: scale(0.4); opacity: 0; }
+            60% { transform: scale(1.12); opacity: 1; }
+            80% { transform: scale(0.96); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .pricing-price.pop {
+            animation: price-pop 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        /* 9. Star rating: stars light up one by one */
+        .review-stars span {
+            display: inline-block;
+            opacity: 0.15;
+            transform: scale(0.6);
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition-delay: calc(var(--si) * 0.1s);
+        }
+
+        .review-card.visible .review-stars span {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* 10. Parallax layers get GPU hint */
+        .hero-cloud, .hero-stars, .float-card, .cta-cloud {
+            will-change: transform;
+        }
+
         @media (prefers-reduced-motion: reduce) {
-            .reveal, .hero-badge, .hero h1, .hero-subtitle {
+            .reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-blur, .step.fx-tumble {
                 opacity: 1 !important;
                 transform: none !important;
+                filter: none !important;
                 transition: none !important;
             }
-            .star, .hero-play, .hero-badge-dot {
-                animation: none !important;
-            }
+            .split-word > span { transform: none !important; transition: none !important; }
+            .review-stars span { opacity: 1 !important; transform: none !important; }
+            .pricing-price.pop { animation: none !important; }
+            .scroll-progress { display: none; }
+            .hero-star, .music-bars span { animation: none !important; }
             html { scroll-behavior: auto; }
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="stars" id="stars"></div>
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-        <!-- ===== HERO ===== -->
-        <section class="hero">
-            <div class="hero-badge reveal">
-                <span class="hero-badge-dot"></span>
-                Персональный AI-мультфильм из одного фото
-            </div>
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="hero">
+        <div class="hero-stars" id="heroStars"></div>
+        <div class="hero-cloud cloud-1"></div>
+        <div class="hero-cloud cloud-2"></div>
+        <div class="hero-cloud cloud-3"></div>
 
-            <h1 class="reveal reveal-delay-1"><span class="text-gradient">Ваш ребёнок —<br>герой мультфильма</span></h1>
-
-            <p class="hero-subtitle reveal reveal-delay-2">Загрузите одно фото — получите волшебное видео: малыш двигается, говорит своим голосом, а на фоне играет музыка. Готово за 5 минут.</p>
-
-            <div class="reveal reveal-delay-3">
-                <a href="https://t.me/Vashmult_bot" class="cta-btn" target="_blank" rel="noopener">
-                    Создать мультик бесплатно
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-                <p class="hero-note">Без регистрации, первый мультик — в подарок</p>
-            </div>
-
-            <div class="hero-screen reveal reveal-delay-4">
-                <div class="hero-screen-frame">
-                    <div class="hero-screen-inner">
-                        <a class="hero-play" href="https://t.me/Vashmult_bot" target="_blank" rel="noopener" aria-label="Создать мультик">
-                            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </a>
-                        <div class="hero-screen-caption">
-                            <div class="cap-title">Премьера вашего малыша</div>
-                            <div class="cap-sub">анимация · озвучка · музыка</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="hero-stats reveal">
-                <div class="hero-stat">
-                    <div class="stat-val">5</div>
-                    <div class="stat-lbl">минут на создание</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="stat-val">4.9</div>
-                    <div class="stat-lbl">рейтинг родителей</div>
-                </div>
-                <div class="hero-stat">
-                    <div class="stat-val">1000+</div>
-                    <div class="stat-lbl">мультиков создано</div>
-                </div>
-            </div>
-
-            <div class="hero-trust reveal">
-                <span class="trust-badge">AI-озвучка голосом</span>
-                <span class="trust-badge">Музыка в подарок</span>
-                <span class="trust-badge">Без водяных знаков</span>
-            </div>
-        </section>
-
-        <!-- ===== HOW IT WORKS ===== -->
-        <section class="how-it-works" id="how-it-works">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="text-gradient">Как это работает</h2>
-                    <p>Всего 4 простых шага до волшебства</p>
-                </div>
-
-                <div class="steps">
-                    <div class="step glass-card reveal reveal-delay-1">
-                        <div class="step-number">01</div>
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-                        </div>
-                        <h3>Загрузите фото</h3>
-                        <p>Одно качественное фото лица ребёнка — анфас, хорошее освещение</p>
-                    </div>
-                    <div class="step glass-card reveal reveal-delay-2">
-                        <div class="step-number">02</div>
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-                        </div>
-                        <h3>Выберите сценарий</h3>
-                        <p>Поздравление, стишок, приключение — или напишите свой текст</p>
-                    </div>
-                    <div class="step glass-card reveal reveal-delay-3">
-                        <div class="step-number">03</div>
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-                        </div>
-                        <h3>Озвучка и музыка</h3>
-                        <p>AI озвучит текст детским голосом, добавит атмосферную музыку</p>
-                    </div>
-                    <div class="step glass-card reveal reveal-delay-4">
-                        <div class="step-number">04</div>
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
-                        </div>
-                        <h3>Получите видео</h3>
-                        <p>Скачайте готовый мультик — делитесь в мессенджерах и соцсетях</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== EXAMPLES ===== -->
-        <section class="examples" id="examples">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="text-gradient">Что умеет ваш мультик</h2>
-                    <p>Три любимых сценария наших родителей</p>
-                </div>
-
-                <div class="examples-grid">
-                    <div class="example-card glass-card reveal reveal-delay-1">
-                        <span class="example-tag">День рождения</span>
-                        <h3>Поздравление от ребёнка</h3>
-                        <p>Малыш сам поздравляет бабушку с юбилеем — она будет в восторге! Тёплые слова голосом любимого внука.</p>
-                    </div>
-                    <div class="example-card glass-card reveal reveal-delay-2">
-                        <span class="example-tag">Стихи</span>
-                        <h3>Ребёнок читает стихи</h3>
-                        <p>Любимое стихотворение в исполнении вашего малыша — память, которая останется навсегда.</p>
-                    </div>
-                    <div class="example-card glass-card reveal reveal-delay-3">
-                        <span class="example-tag">Сказка</span>
-                        <h3>Герой сказки</h3>
-                        <p>Ребёнок рассказывает собственную историю — как настоящий герой мультфильма на большом экране.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== FEATURES ===== -->
-        <section class="features" id="features">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="text-gradient">Возможности</h2>
-                    <p>Технологии, которые делают мультик особенным</p>
-                </div>
-
-                <div class="features-grid">
-                    <div class="feature-card glass-card reveal reveal-delay-1">
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 3a4.5 4.5 0 0 0-4.5 4.5c0 1.5.7 2.8 1.8 3.6A5.5 5.5 0 0 0 6.5 16c0 3 2.5 5 5.5 5s5.5-2 5.5-5a5.5 5.5 0 0 0-2.8-4.9 4.5 4.5 0 0 0 1.8-3.6A4.5 4.5 0 0 0 12 3z"/></svg>
-                        </div>
-                        <h3>AI-анимация лица</h3>
-                        <p>Нейросеть оживляет фото: ребёнок моргает, улыбается, говорит — как настоящий герой мультфильма</p>
-                    </div>
-                    <div class="feature-card glass-card reveal reveal-delay-2">
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-                        </div>
-                        <h3>Голосовая озвучка</h3>
-                        <p>Выберите детский голос или загрузите свою запись — AI синхронизирует движение губ</p>
-                    </div>
-                    <div class="feature-card glass-card reveal reveal-delay-3">
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                        </div>
-                        <h3>Музыка и звуки</h3>
-                        <p>Библиотека атмосферных треков: от нежных колыбельных до весёлых приключений</p>
-                    </div>
-                    <div class="feature-card glass-card reveal reveal-delay-1">
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                        </div>
-                        <h3>Готовые сценарии</h3>
-                        <p>Поздравления, стихи, сказки — или напишите свой уникальный текст</p>
-                    </div>
-                    <div class="feature-card glass-card reveal reveal-delay-2">
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
-                        </div>
-                        <h3>Удобный формат</h3>
-                        <p>MP4-видео идеально для WhatsApp, Telegram и соцсетей — делитесь одним кликом</p>
-                    </div>
-                    <div class="feature-card glass-card reveal reveal-delay-3">
-                        <div class="line-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                        </div>
-                        <h3>Безопасность</h3>
-                        <p>Фото обрабатываются и сразу удаляются. Мы не храним данные ваших детей</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== PRICING ===== -->
-        <section class="pricing" id="pricing">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="text-gradient">Тарифы</h2>
-                    <p>Выберите подходящий вариант</p>
-                </div>
-
-                <div class="pricing-grid">
-                    <div class="pricing-card reveal reveal-delay-1">
-                        <div class="pricing-title">Пробный</div>
-                        <div class="pricing-desc">Познакомьтесь с возможностями</div>
-                        <div class="pricing-price">0 <span>руб.</span></div>
-                        <ul class="pricing-features">
-                            <li>1 бесплатный мультик</li>
-                            <li>Длительность до 15 сек</li>
-                            <li>AI-озвучка голосом</li>
-                            <li>Фоновая музыка</li>
-                            <li>Водяной знак</li>
-                        </ul>
-                        <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Попробовать</a>
-                    </div>
-
-                    <div class="pricing-card featured reveal reveal-delay-2">
-                        <div class="pricing-badge">Популярный</div>
-                        <div class="pricing-title">Стандарт</div>
-                        <div class="pricing-desc">Для особых моментов</div>
-                        <div class="pricing-price">490 <span>руб.</span></div>
-                        <ul class="pricing-features">
-                            <li>1 мультик до 60 сек</li>
-                            <li>Без водяного знака</li>
-                            <li>Любой сценарий</li>
-                            <li>Выбор голоса</li>
-                            <li>HD-качество</li>
-                        </ul>
-                        <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
-                    </div>
-
-                    <div class="pricing-card reveal reveal-delay-3">
-                        <div class="pricing-title">Пакет</div>
-                        <div class="pricing-desc">Для тех, кто хочет больше</div>
-                        <div class="pricing-price">1 490 <span>руб.</span></div>
-                        <ul class="pricing-features">
-                            <li>5 мультиков</li>
-                            <li>Всё из тарифа Стандарт</li>
-                            <li>Приоритетная генерация</li>
-                            <li>Бонус: +1 мультик</li>
-                            <li>Поддержка в Telegram</li>
-                        </ul>
-                        <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== REVIEWS ===== -->
-        <section class="reviews" id="reviews">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="text-gradient">Отзывы родителей</h2>
-                    <p>Настоящие эмоции наших семей</p>
-                </div>
-            </div>
-
-            <div class="reviews-scroll">
-                <div class="review-card">
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <p class="review-text">«Дочка поздравила бабушку с днём рождения — та плакала от счастья! Мультик смотрим всей семьёй уже десятый раз.»</p>
-                    </div>
-                    <div class="review-author">— Ольга, мама Алисы (4 года)</div>
-                </div>
-                <div class="review-card">
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <p class="review-text">«Сын "читает" стихи Пушкина. Теперь это наше семейное сокровище. Спасибо за такую магию!»</p>
-                    </div>
-                    <div class="review-author">— Михаил, папа Артёма (6 лет)</div>
-                </div>
-                <div class="review-card">
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <p class="review-text">«Отправила видео с поздравлением мужу на работу — коллеги были в шоке, что ребёнок сам говорит!»</p>
-                    </div>
-                    <div class="review-author">— Анна, мама Маши (3 года)</div>
-                </div>
-                <div class="review-card">
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <p class="review-text">«Сделали целую серию мультиков на Новый год — теперь все родственники ждут поздравлений от внуков!»</p>
-                    </div>
-                    <div class="review-author">— Елена, бабушка</div>
-                </div>
-                <div class="review-card">
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <p class="review-text">«Качество озвучки поразило. Голос реально детский, губы синхронизированы. Технологии!»</p>
-                    </div>
-                    <div class="review-author">— Дмитрий, папа Никиты (5 лет)</div>
-                </div>
-                <div class="review-card">
-                    <div>
-                        <div class="review-stars">★★★★★</div>
-                        <p class="review-text">«Дочка в восторге — теперь просит "ещё мультик про себя"! Отличный подарок на любой праздник.»</p>
-                    </div>
-                    <div class="review-author">— Ирина, мама Софии (4 года)</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== FAQ ===== -->
-        <section class="faq" id="faq">
-            <div class="container">
-                <div class="section-header reveal">
-                    <h2 class="text-gradient">Частые вопросы</h2>
-                </div>
-
-                <div class="faq-list">
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            <span>Как загрузить фото?</span>
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Просто отправьте фото ребёнка боту в Telegram. Лучше всего подходит фото анфас с хорошим освещением, где видно лицо целиком. Бот сам подскажет, если нужно другое фото.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            <span>Сколько времени занимает создание мультика?</span>
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Обычно 3-5 минут. В пиковые часы может быть немного дольше, но мы всегда уведомим вас, когда видео будет готово.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            <span>Можно написать свой текст?</span>
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Да! Вы можете выбрать готовый сценарий (поздравления, стихи, сказки) или написать свой собственный текст. AI озвучит любой текст детским голосом.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            <span>Безопасно ли загружать фото ребёнка?</span>
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Абсолютно. Фото используется только для создания вашего мультика и сразу удаляется после обработки. Мы не храним данные и не передаём их третьим лицам.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            <span>Как оплатить?</span>
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Оплата происходит прямо в Telegram через безопасный платёжный шлюз. Принимаем карты Visa, MasterCard, МИР и СБП.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            <span>Можно ли вернуть деньги?</span>
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Если результат вас не устроит — напишите в поддержку, мы переделаем мультик бесплатно или вернём деньги. Ваше удовольствие — наш приоритет.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== FINAL CTA ===== -->
-        <section class="final-cta">
-            <div class="container">
-                <h2 class="text-gradient reveal">Подарите ребёнку<br>его собственный мультик</h2>
-                <p class="reveal reveal-delay-1">Первый мультик — бесплатно. Попробуйте прямо сейчас!</p>
-                <div class="reveal reveal-delay-2">
-                    <a href="https://t.me/Vashmult_bot" class="cta-btn" target="_blank" rel="noopener">
-                        Создать мультик в Telegram
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sticky Mobile CTA -->
-        <div class="sticky-cta" id="stickyCta">
-            <a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Создать мультик бесплатно</a>
+        <div class="hero-badge reveal">
+            <span class="hero-badge-dot"></span>
+            Персональный AI-мультфильм из одного фото
         </div>
 
-        <!-- ===== FOOTER ===== -->
-        <footer>
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Ваш Мульт</h3>
-                    <p>Telegram-бот для создания персональных анимационных видео из фотографий. Оживляем моменты с 2024 года.</p>
+        <h1 class="reveal reveal-delay-1">Ваш ребёнок —<br>герой мультфильма</h1>
+
+        <p class="hero-subtitle reveal reveal-delay-2">Загрузите одно фото — получите волшебное видео: малыш двигается, говорит своим голосом, а на фоне играет музыка. Готово за 5 минут.</p>
+
+        <div class="hero-buttons reveal reveal-delay-3">
+            <a href="https://t.me/Vashmult_bot" class="btn btn-white" target="_blank" rel="noopener">
+                Создать мультик бесплатно
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#how-it-works" class="btn btn-ghost">Как это работает</a>
+        </div>
+        <p class="hero-note reveal reveal-delay-3">Без регистрации, первый мультик — в подарок</p>
+
+        <div class="hero-float-stack reveal reveal-delay-4">
+            <div class="float-card float-side float-chat">
+                <div class="chat-bubble chat-in">Отправьте фото ребёнка — и начнём волшебство</div>
+                <div class="chat-bubble chat-out">Фото отправлено ✓</div>
+            </div>
+
+            <div class="float-card float-main">
+                <div class="float-main-screen">
+                    <a class="float-play" href="https://t.me/Vashmult_bot" target="_blank" rel="noopener" aria-label="Создать мультик">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </a>
                 </div>
-                <div class="footer-col">
-                    <h4>Контакты</h4>
-                    <ul>
-                        <li><a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Бот @Vashmult_bot</a></li>
-                        <li><a href="https://t.me/vashmult_support" target="_blank" rel="noopener">Поддержка</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Информация</h4>
-                    <ul>
-                        <li><a href="#how-it-works">Как это работает</a></li>
-                        <li><a href="#pricing">Тарифы</a></li>
-                        <li><a href="#faq">FAQ</a></li>
-                    </ul>
+                <div class="float-main-meta">
+                    <div>
+                        <div class="meta-title">Премьера вашего малыша</div>
+                        <div class="meta-sub">анимация · озвучка · музыка</div>
+                    </div>
+                    <span class="meta-chip">Готово за 5 минут</span>
                 </div>
             </div>
-            <div class="footer-bottom">
-                &copy; 2024-2026 Ваш Мульт. Все права защищены.
+
+            <div class="float-card float-side float-music">
+                <div class="music-row">
+                    <div class="music-icon">
+                        <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                    </div>
+                    <div>
+                        <div class="music-title">Волшебная мелодия</div>
+                        <div class="music-sub">подобрана под сюжет</div>
+                    </div>
+                </div>
+                <div class="music-bars">
+                    <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span><span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span><span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span><span style="--i:9"></span>
+                </div>
             </div>
-        </footer>
+        </div>
+
+        <div class="hero-bottom-fade"></div>
+    </section>
+
+    <!-- ===== STATS ===== -->
+    <div class="stats-strip">
+        <div class="stats-row">
+            <div class="stat-card reveal-scale">
+                <div class="stat-val" data-count="5" data-suffix=" минут">5 минут</div>
+                <div class="stat-lbl">на создание мультика</div>
+            </div>
+            <div class="stat-card reveal-scale reveal-delay-1">
+                <div class="stat-val" data-count="4.9" data-decimals="1" data-suffix=" из 5">4.9 из 5</div>
+                <div class="stat-lbl">рейтинг родителей</div>
+            </div>
+            <div class="stat-card reveal-scale reveal-delay-2">
+                <div class="stat-val" data-count="1000" data-suffix="+">1000+</div>
+                <div class="stat-lbl">мультиков создано</div>
+            </div>
+        </div>
     </div>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section id="how-it-works">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Как это работает</h2>
+                <p>Всего 4 простых шага до волшебства</p>
+            </div>
+
+            <div class="steps">
+                <div class="step step-1 fx-tumble reveal-delay-1" style="--tilt: -6deg">
+                    <span class="step-num">1</span>
+                    <h3>Загрузите фото</h3>
+                    <p>Одно качественное фото лица ребёнка — анфас, хорошее освещение</p>
+                </div>
+                <div class="step step-2 fx-tumble reveal-delay-2" style="--tilt: 5deg">
+                    <span class="step-num">2</span>
+                    <h3>Выберите сценарий</h3>
+                    <p>Поздравление, стишок, приключение — или напишите свой текст</p>
+                </div>
+                <div class="step step-3 fx-tumble reveal-delay-3" style="--tilt: -4deg">
+                    <span class="step-num">3</span>
+                    <h3>Озвучка и музыка</h3>
+                    <p>AI озвучит текст детским голосом, добавит атмосферную музыку</p>
+                </div>
+                <div class="step step-4 fx-tumble reveal-delay-4" style="--tilt: 6deg">
+                    <span class="step-num">4</span>
+                    <h3>Получите видео</h3>
+                    <p>Скачайте готовый мультик — делитесь в мессенджерах и соцсетях</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== EXAMPLES ===== -->
+    <section class="examples">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Что умеет ваш мультик</h2>
+                <p>Три любимых сценария наших родителей</p>
+            </div>
+
+            <div class="examples-grid">
+                <div class="example-card reveal-left reveal-delay-1">
+                    <span class="example-tag tag-violet">День рождения</span>
+                    <h3>Поздравление от ребёнка</h3>
+                    <p>Малыш сам поздравляет бабушку с юбилеем — она будет в восторге! Тёплые слова голосом любимого внука.</p>
+                </div>
+                <div class="example-card reveal reveal-delay-2">
+                    <span class="example-tag tag-mint">Стихи</span>
+                    <h3>Ребёнок читает стихи</h3>
+                    <p>Любимое стихотворение в исполнении вашего малыша — память, которая останется навсегда.</p>
+                </div>
+                <div class="example-card reveal-right reveal-delay-3">
+                    <span class="example-tag tag-peach">Сказка</span>
+                    <h3>Герой сказки</h3>
+                    <p>Ребёнок рассказывает собственную историю — как настоящий герой мультфильма на большом экране.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section id="features">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Возможности</h2>
+                <p>Технологии, которые делают мультик особенным</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card reveal reveal-delay-1">
+                    <div class="feature-icon fi-violet">
+                        <svg viewBox="0 0 24 24"><path d="M12 3a4.5 4.5 0 0 0-4.5 4.5c0 1.5.7 2.8 1.8 3.6A5.5 5.5 0 0 0 6.5 16c0 3 2.5 5 5.5 5s5.5-2 5.5-5a5.5 5.5 0 0 0-2.8-4.9 4.5 4.5 0 0 0 1.8-3.6A4.5 4.5 0 0 0 12 3z"/></svg>
+                    </div>
+                    <h3>AI-анимация лица</h3>
+                    <p>Нейросеть оживляет фото: ребёнок моргает, улыбается, говорит — как настоящий герой мультфильма</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-2">
+                    <div class="feature-icon fi-pink">
+                        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+                    </div>
+                    <h3>Голосовая озвучка</h3>
+                    <p>Выберите детский голос или загрузите свою запись — AI синхронизирует движение губ</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-3">
+                    <div class="feature-icon fi-mint">
+                        <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                    </div>
+                    <h3>Музыка и звуки</h3>
+                    <p>Библиотека атмосферных треков: от нежных колыбельных до весёлых приключений</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-1">
+                    <div class="feature-icon fi-sky">
+                        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    </div>
+                    <h3>Готовые сценарии</h3>
+                    <p>Поздравления, стихи, сказки — или напишите свой уникальный текст</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-2">
+                    <div class="feature-icon fi-tangerine">
+                        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
+                    </div>
+                    <h3>Удобный формат</h3>
+                    <p>MP4-видео идеально для WhatsApp, Telegram и соцсетей — делитесь одним кликом</p>
+                </div>
+                <div class="feature-card reveal reveal-delay-3">
+                    <div class="feature-icon fi-aqua">
+                        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <h3>Безопасность</h3>
+                    <p>Фото обрабатываются и сразу удаляются. Мы не храним данные ваших детей</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Тарифы</h2>
+                <p>Выберите подходящий вариант</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card reveal reveal-delay-1">
+                    <div class="pricing-title">Пробный</div>
+                    <div class="pricing-desc">Познакомьтесь с возможностями</div>
+                    <div class="pricing-price">0 <span>руб.</span></div>
+                    <ul class="pricing-features">
+                        <li>1 бесплатный мультик</li>
+                        <li>Длительность до 15 сек</li>
+                        <li>AI-озвучка голосом</li>
+                        <li>Фоновая музыка</li>
+                        <li>Водяной знак</li>
+                    </ul>
+                    <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Попробовать</a>
+                </div>
+
+                <div class="pricing-card featured reveal reveal-delay-2">
+                    <div class="pricing-badge">Популярный</div>
+                    <div class="pricing-title">Стандарт</div>
+                    <div class="pricing-desc">Для особых моментов</div>
+                    <div class="pricing-price">490 <span>руб.</span></div>
+                    <ul class="pricing-features">
+                        <li>1 мультик до 60 сек</li>
+                        <li>Без водяного знака</li>
+                        <li>Любой сценарий</li>
+                        <li>Выбор голоса</li>
+                        <li>HD-качество</li>
+                    </ul>
+                    <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
+                </div>
+
+                <div class="pricing-card reveal reveal-delay-3">
+                    <div class="pricing-title">Пакет</div>
+                    <div class="pricing-desc">Для тех, кто хочет больше</div>
+                    <div class="pricing-price">1 490 <span>руб.</span></div>
+                    <ul class="pricing-features">
+                        <li>5 мультиков</li>
+                        <li>Всё из тарифа Стандарт</li>
+                        <li>Приоритетная генерация</li>
+                        <li>Бонус: +1 мультик</li>
+                        <li>Поддержка в Telegram</li>
+                    </ul>
+                    <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== REVIEWS ===== -->
+    <section id="reviews">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Отзывы родителей</h2>
+                <p>Настоящие эмоции наших семей</p>
+            </div>
+        </div>
+
+        <div class="reviews-scroll">
+            <div class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Дочка поздравила бабушку с днём рождения — та плакала от счастья! Мультик смотрим всей семьёй уже десятый раз.»</p>
+                </div>
+                <div class="review-author">— Ольга, мама Алисы (4 года)</div>
+            </div>
+            <div class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Сын "читает" стихи Пушкина. Теперь это наше семейное сокровище. Спасибо за такую магию!»</p>
+                </div>
+                <div class="review-author">— Михаил, папа Артёма (6 лет)</div>
+            </div>
+            <div class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Отправила видео с поздравлением мужу на работу — коллеги были в шоке, что ребёнок сам говорит!»</p>
+                </div>
+                <div class="review-author">— Анна, мама Маши (3 года)</div>
+            </div>
+            <div class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Сделали целую серию мультиков на Новый год — теперь все родственники ждут поздравлений от внуков!»</p>
+                </div>
+                <div class="review-author">— Елена, бабушка</div>
+            </div>
+            <div class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Качество озвучки поразило. Голос реально детский, губы синхронизированы. Технологии!»</p>
+                </div>
+                <div class="review-author">— Дмитрий, папа Никиты (5 лет)</div>
+            </div>
+            <div class="review-card">
+                <div>
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Дочка в восторге — теперь просит "ещё мультик про себя"! Отличный подарок на любой праздник.»</p>
+                </div>
+                <div class="review-author">— Ирина, мама Софии (4 года)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section id="faq">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Частые вопросы</h2>
+            </div>
+
+            <div class="faq-list reveal-blur reveal-delay-1">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Как загрузить фото?</span>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Просто отправьте фото ребёнка боту в Telegram. Лучше всего подходит фото анфас с хорошим освещением, где видно лицо целиком. Бот сам подскажет, если нужно другое фото.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Сколько времени занимает создание мультика?</span>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Обычно 3-5 минут. В пиковые часы может быть немного дольше, но мы всегда уведомим вас, когда видео будет готово.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Можно написать свой текст?</span>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Да! Вы можете выбрать готовый сценарий (поздравления, стихи, сказки) или написать свой собственный текст. AI озвучит любой текст детским голосом.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Безопасно ли загружать фото ребёнка?</span>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Абсолютно. Фото используется только для создания вашего мультика и сразу удаляется после обработки. Мы не храним данные и не передаём их третьим лицам.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Как оплатить?</span>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Оплата происходит прямо в Telegram через безопасный платёжный шлюз. Принимаем карты Visa, MasterCard, МИР и СБП.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Можно ли вернуть деньги?</span>
+                        <span class="faq-icon"></span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Если результат вас не устроит — напишите в поддержку, мы переделаем мультик бесплатно или вернём деньги. Ваше удовольствие — наш приоритет.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA ===== -->
+    <div class="final-cta">
+        <div class="final-cta-card reveal-scale">
+            <div class="cta-cloud cta-cloud-1"></div>
+            <div class="cta-cloud cta-cloud-2"></div>
+            <h2>Подарите ребёнку<br>его собственный мультик</h2>
+            <p>Первый мультик — бесплатно. Попробуйте прямо сейчас!</p>
+            <a href="https://t.me/Vashmult_bot" class="btn btn-white" target="_blank" rel="noopener">
+                Создать мультик в Telegram
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Sticky Mobile CTA -->
+    <div class="sticky-cta" id="stickyCta">
+        <a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Создать мультик бесплатно</a>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>Ваш Мульт</h3>
+                <p>Telegram-бот для создания персональных анимационных видео из фотографий. Оживляем моменты с 2024 года.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Контакты</h4>
+                <ul>
+                    <li><a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Бот @Vashmult_bot</a></li>
+                    <li><a href="https://t.me/vashmult_support" target="_blank" rel="noopener">Поддержка</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Информация</h4>
+                <ul>
+                    <li><a href="#how-it-works">Как это работает</a></li>
+                    <li><a href="#pricing">Тарифы</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2024-2026 Ваш Мульт. Все права защищены.
+        </div>
+    </footer>
 
     <script>
     (function() {
@@ -1344,13 +1629,13 @@
 
         var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Stars
-        var starsContainer = document.getElementById('stars');
-        if (starsContainer && !prefersReducedMotion) {
-            var starCount = window.innerWidth < 600 ? 40 : 80;
+        // Stars in hero sky
+        var starsContainer = document.getElementById('heroStars');
+        if (starsContainer) {
+            var starCount = window.innerWidth < 600 ? 30 : 60;
             for (var i = 0; i < starCount; i++) {
                 var star = document.createElement('div');
-                star.className = 'star';
+                star.className = 'hero-star';
                 star.style.left = Math.random() * 100 + '%';
                 star.style.top = Math.random() * 100 + '%';
                 var size = Math.random() * 2 + 1;
@@ -1362,13 +1647,47 @@
             }
         }
 
-        // Reveal on scroll
-        var revealEls = document.querySelectorAll('.reveal');
+        // ===== FX 1: scroll progress bar =====
+        var progressBar = document.getElementById('scrollProgress');
+
+        // ===== FX 7: word-by-word headings =====
+        if (!prefersReducedMotion) {
+            document.querySelectorAll('.section-header h2, .final-cta-card h2').forEach(function(h) {
+                var words = h.textContent.split(/\s+/).filter(Boolean);
+                var hasBr = h.innerHTML.indexOf('<br') !== -1;
+                if (hasBr) return; // keep manual line breaks intact
+                h.innerHTML = words.map(function(w, i) {
+                    return '<span class="split-word"><span style="--wi:' + i + '">' + w + '</span></span>';
+                }).join(' ');
+                h.classList.add('split-ready');
+            });
+        }
+
+        // ===== FX 9: review stars into separate spans =====
+        document.querySelectorAll('.review-stars').forEach(function(el) {
+            var stars = el.textContent.trim().split('');
+            el.innerHTML = stars.map(function(s, i) {
+                return '<span style="--si:' + i + '">' + s + '</span>';
+            }).join('');
+        });
+
+        // ===== FX 4: auto-stagger card grids =====
+        document.querySelectorAll('.steps, .features-grid, .examples-grid, .pricing-grid, .stats-row').forEach(function(grid) {
+            Array.prototype.forEach.call(grid.children, function(child, i) {
+                child.style.transitionDelay = (i * 0.09) + 's';
+            });
+        });
+
+        // ===== FX 2-6, 8: reveal observer for all variants =====
+        var revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-blur, .fx-tumble, .split-ready, .review-card');
         if ('IntersectionObserver' in window && !prefersReducedMotion) {
             var observer = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
+                        // FX 8: price pop when pricing card shows up
+                        var price = entry.target.querySelector ? entry.target.querySelector('.pricing-price') : null;
+                        if (price) price.classList.add('pop');
                         observer.unobserve(entry.target);
                     }
                 });
@@ -1377,6 +1696,99 @@
         } else {
             revealEls.forEach(function(el) { el.classList.add('visible'); });
         }
+
+        // ===== FX 5: count-up counters =====
+        function animateCounter(el) {
+            var target = parseFloat(el.getAttribute('data-count'));
+            var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+            var suffix = el.getAttribute('data-suffix') || '';
+            var duration = 1400;
+            var start = null;
+            function tick(ts) {
+                if (!start) start = ts;
+                var p = Math.min((ts - start) / duration, 1);
+                var eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = (target * eased).toFixed(decimals) + suffix;
+                if (p < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+
+        var counters = document.querySelectorAll('[data-count]');
+        if ('IntersectionObserver' in window && !prefersReducedMotion) {
+            var counterObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.6 });
+            counters.forEach(function(el) { counterObserver.observe(el); });
+        }
+
+        // ===== FX 3 + 10: scroll-linked parallax (rAF) =====
+        var hero = document.getElementById('hero');
+        var heroStarsEl = document.getElementById('heroStars');
+        var clouds = document.querySelectorAll('.hero-cloud');
+        var floatChat = document.querySelector('.float-chat');
+        var floatMusic = document.querySelector('.float-music');
+        var floatMain = document.querySelector('.float-main');
+        var reviewsRow = document.querySelector('.reviews-scroll');
+        var ctaClouds = document.querySelectorAll('.cta-cloud');
+        var ticking = false;
+
+        function onScrollFx() {
+            var y = window.scrollY;
+
+            // progress bar
+            if (progressBar) {
+                var docH = document.documentElement.scrollHeight - window.innerHeight;
+                progressBar.style.transform = 'scaleX(' + (docH > 0 ? y / docH : 0) + ')';
+            }
+
+            if (!prefersReducedMotion) {
+                // hero parallax: stars slower, clouds faster, float cards drift & tilt
+                var heroH = hero ? hero.offsetHeight : 0;
+                if (y < heroH) {
+                    if (heroStarsEl) heroStarsEl.style.transform = 'translateY(' + y * 0.35 + 'px)';
+                    clouds.forEach(function(c, i) {
+                        c.style.transform = 'translate(' + (y * (i % 2 ? -0.08 : 0.08)) + 'px, ' + (-y * (0.12 + i * 0.05)) + 'px)';
+                    });
+                    if (floatMain) floatMain.style.transform = 'translateY(' + (-y * 0.06) + 'px)';
+                    if (floatChat) floatChat.style.transform = 'rotate(' + (-3 - y * 0.012) + 'deg) translateY(' + (-y * 0.1) + 'px)';
+                    if (floatMusic) floatMusic.style.transform = 'rotate(' + (2.5 + y * 0.012) + 'deg) translateY(' + (-y * 0.14) + 'px)';
+                }
+
+                // reviews row drifts sideways with scroll
+                if (reviewsRow) {
+                    var r = reviewsRow.getBoundingClientRect();
+                    if (r.top < window.innerHeight && r.bottom > 0) {
+                        var progress = 1 - (r.top + r.height / 2) / window.innerHeight;
+                        reviewsRow.style.transform = 'translateX(' + (-progress * 36) + 'px)';
+                    }
+                }
+
+                // final CTA clouds drift
+                ctaClouds.forEach(function(c, i) {
+                    var rect = c.parentElement.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        var p = 1 - rect.top / window.innerHeight;
+                        c.style.transform = 'translateX(' + (p * (i % 2 ? -40 : 40)) + 'px)';
+                    }
+                });
+            }
+
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(onScrollFx);
+            }
+        }, { passive: true });
+        onScrollFx();
 
         // FAQ accordion
         document.querySelectorAll('.faq-question').forEach(function(btn) {
@@ -1401,7 +1813,7 @@
         var stickyCta = document.getElementById('stickyCta');
         if (stickyCta && window.innerWidth <= 768) {
             window.addEventListener('scroll', function() {
-                if (window.scrollY > 600) {
+                if (window.scrollY > 700) {
                     stickyCta.classList.add('visible');
                 } else {
                     stickyCta.classList.remove('visible');
