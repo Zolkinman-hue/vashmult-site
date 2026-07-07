@@ -286,7 +286,7 @@
             position: relative;
             z-index: 2;
             width: min(860px, 100%);
-            margin: 28px auto 0;
+            margin: 100px auto 0;
             display: flex;
             align-items: flex-end;
             justify-content: center;
@@ -557,6 +557,11 @@
 
         @media (max-width: 900px) {
             .float-chat, .float-music { display: none; }
+        }
+
+        /* Mid-height screens: keep the player frame inside the first screen */
+        @media (min-width: 769px) and (max-height: 990px) {
+            .hero-float-stack { margin-top: 28px; }
         }
 
         /* Short screens: compress hero so the player frame fits the first screen */
@@ -1435,12 +1440,12 @@
 
         <div class="hero-buttons reveal reveal-delay-3">
             <a href="https://t.me/Vashmult_bot" class="btn btn-white" target="_blank" rel="noopener">
-                Создать мультик бесплатно
+                Создать мультик
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
             <a href="#how-it-works" class="btn btn-ghost">Как это работает</a>
         </div>
-        <p class="hero-note reveal reveal-delay-3">Без регистрации, первый мультик — в подарок</p>
+        <p class="hero-note reveal reveal-delay-3">Без регистрации — прямо в Telegram, готово за 10-15 минут</p>
 
         <div class="hero-float-stack reveal reveal-delay-4">
             <div class="float-card float-side float-chat">
@@ -1658,46 +1663,60 @@
 
             <div class="pricing-grid">
                 <div class="pricing-card reveal reveal-delay-1">
-                    <div class="pricing-title">Пробный</div>
-                    <div class="pricing-desc">Познакомьтесь с возможностями</div>
-                    <div class="pricing-price">0 <span>руб.</span></div>
+                    <div class="pricing-title">Обычный</div>
+                    <div class="pricing-desc">Один волшебный мультик</div>
+                    <div class="pricing-price">990 <span>руб.</span></div>
                     <ul class="pricing-features">
-                        <li>1 бесплатный мультик</li>
-                        <li>Длительность до 15 сек</li>
-                        <li>AI-озвучка голосом</li>
-                        <li>Фоновая музыка</li>
-                        <li>Водяной знак</li>
+                        <li>Мультик до 60 секунд</li>
+                        <li>Ребёнок — главный герой</li>
+                        <li>AI-озвучка и музыка</li>
+                        <li>HD-качество</li>
+                        <li>Без водяного знака</li>
                     </ul>
-                    <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Попробовать</a>
+                    <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
                 </div>
 
                 <div class="pricing-card featured reveal reveal-delay-2">
                     <div class="pricing-badge">Популярный</div>
-                    <div class="pricing-title">Стандарт</div>
+                    <div class="pricing-title">Премиум</div>
                     <div class="pricing-desc">Для особых моментов</div>
-                    <div class="pricing-price">490 <span>руб.</span></div>
+                    <div class="pricing-price">1 490 <span>руб.</span></div>
                     <ul class="pricing-features">
-                        <li>1 мультик до 60 сек</li>
-                        <li>Без водяного знака</li>
-                        <li>Любой сценарий</li>
-                        <li>Выбор голоса</li>
-                        <li>HD-качество</li>
+                        <li>Всё из тарифа «Обычный»</li>
+                        <li>Приоритетная генерация</li>
+                        <li>Выбор голоса и музыки</li>
+                        <li>Расширенные сюжеты</li>
+                        <li>Поддержка в Telegram</li>
                     </ul>
                     <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
                 </div>
 
                 <div class="pricing-card reveal reveal-delay-3">
-                    <div class="pricing-title">Пакет</div>
-                    <div class="pricing-desc">Для тех, кто хочет больше</div>
-                    <div class="pricing-price">1 490 <span>руб.</span></div>
+                    <div class="pricing-title">Дуэт</div>
+                    <div class="pricing-desc">Двое детей в одном мультике</div>
+                    <div class="pricing-price">2 490 <span>руб.</span></div>
                     <ul class="pricing-features">
-                        <li>5 мультиков</li>
-                        <li>Всё из тарифа Стандарт</li>
-                        <li>Приоритетная генерация</li>
-                        <li>Бонус: +1 мультик</li>
-                        <li>Поддержка в Telegram</li>
+                        <li>Два ребёнка — два героя</li>
+                        <li>Идеально для братьев и сестёр</li>
+                        <li>Всё из тарифа «Премиум»</li>
+                        <li>Общее приключение</li>
+                        <li>Память для всей семьи</li>
                     </ul>
                     <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Заказать</a>
+                </div>
+
+                <div class="pricing-card reveal reveal-delay-4">
+                    <div class="pricing-title">Подписка</div>
+                    <div class="pricing-desc">Новые серии каждую неделю</div>
+                    <div class="pricing-price">2 490 <span>руб./мес</span></div>
+                    <ul class="pricing-features">
+                        <li>4 новые серии в неделю</li>
+                        <li>Приключения каждый понедельник</li>
+                        <li>Ребёнок — герой сериала</li>
+                        <li>Приоритетная генерация</li>
+                        <li>Отмена в любой момент</li>
+                    </ul>
+                    <a href="https://t.me/Vashmult_bot" class="pricing-cta" target="_blank" rel="noopener">Оформить</a>
                 </div>
             </div>
         </div>
@@ -1830,7 +1849,7 @@
             <div class="cta-cloud cta-cloud-1"></div>
             <div class="cta-cloud cta-cloud-2"></div>
             <h2>Подарите ребёнку<br>его собственный мультик</h2>
-            <p>Первый мультик — бесплатно. Попробуйте прямо сейчас!</p>
+            <p>Всего 10-15 минут — и премьера готова. Попробуйте прямо сейчас!</p>
             <a href="https://t.me/Vashmult_bot" class="btn btn-white" target="_blank" rel="noopener">
                 Создать мультик в Telegram
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1840,7 +1859,7 @@
 
     <!-- Sticky Mobile CTA -->
     <div class="sticky-cta" id="stickyCta">
-        <a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Создать мультик бесплатно</a>
+        <a href="https://t.me/Vashmult_bot" target="_blank" rel="noopener">Создать мультик</a>
     </div>
 
     <!-- ===== FOOTER ===== -->
