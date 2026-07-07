@@ -320,7 +320,16 @@
             justify-content: center;
         }
 
+        .screen-frame-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .float-play {
+            position: relative;
             width: 64px;
             height: 64px;
             border-radius: 50%;
@@ -329,6 +338,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 6px 24px rgba(25, 9, 34, 0.35);
+            animation: play-press 4.5s ease-in-out infinite;
         }
 
         .float-play svg {
@@ -336,6 +346,85 @@
             height: 22px;
             fill: var(--ink);
             margin-left: 4px;
+        }
+
+        /* looping "someone presses play" scene */
+        @keyframes play-press {
+            0%, 30% { transform: scale(1); }
+            36% { transform: scale(0.86); }
+            44% { transform: scale(1.08); }
+            52%, 100% { transform: scale(1); }
+        }
+
+        .play-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            animation: play-ripple 4.5s ease-out infinite;
+            pointer-events: none;
+        }
+
+        .play-ring.r2 { animation-delay: 0.18s; }
+
+        @keyframes play-ripple {
+            0%, 36% { transform: scale(0.7); opacity: 0; }
+            42% { opacity: 0.8; }
+            72% { transform: scale(2.4); opacity: 0; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        .tap-hand {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 44px;
+            height: 44px;
+            margin: -6px 0 0 -8px;
+            pointer-events: none;
+            z-index: 4;
+            animation: hand-tap 4.5s ease-in-out infinite;
+            filter: drop-shadow(0 4px 8px rgba(25, 9, 34, 0.4));
+        }
+
+        .tap-hand svg {
+            width: 100%;
+            height: 100%;
+            fill: #fff;
+            stroke: var(--ink);
+            stroke-width: 0.8;
+        }
+
+        @keyframes hand-tap {
+            0% { transform: translate(110px, 100px) rotate(-8deg); opacity: 0; }
+            14% { transform: translate(96px, 86px) rotate(-8deg); opacity: 1; }
+            30% { transform: translate(10px, 12px) rotate(0deg); opacity: 1; }
+            36% { transform: translate(8px, 10px) rotate(0deg) scale(0.82); }
+            44% { transform: translate(10px, 12px) rotate(0deg) scale(1); }
+            60% { transform: translate(96px, 86px) rotate(-8deg); opacity: 1; }
+            72%, 100% { transform: translate(110px, 100px) rotate(-8deg); opacity: 0; }
+        }
+
+        /* hero sparkles */
+        .hero-sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkle-drift var(--sd, 7s) ease-in-out infinite;
+            animation-delay: var(--sdel, 0s);
+            opacity: 0;
+        }
+
+        .hero-sparkle svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffe9b8;
+        }
+
+        @keyframes sparkle-drift {
+            0%, 100% { opacity: 0; transform: translateY(12px) scale(0.5) rotate(0deg); }
+            30% { opacity: 0.9; }
+            50% { opacity: 0.7; transform: translateY(-14px) scale(1.05) rotate(40deg); }
+            80% { opacity: 0; transform: translateY(-30px) scale(0.6) rotate(70deg); }
         }
 
         .float-main-meta {
@@ -605,6 +694,109 @@
         .example-card p {
             color: var(--slate);
             font-size: 0.95rem;
+        }
+
+        /* ===== BEFORE/AFTER SLIDER ===== */
+        .ba-wrap {
+            max-width: 440px;
+            margin: 0 auto;
+        }
+
+        .ba-slider {
+            position: relative;
+            aspect-ratio: 3 / 4;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-float);
+            cursor: ew-resize;
+            touch-action: none;
+            user-select: none;
+            --pos: 50%;
+        }
+
+        .ba-img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .ba-before-clip {
+            position: absolute;
+            inset: 0;
+            clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+            pointer-events: none;
+        }
+
+        .ba-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: var(--pos);
+            width: 3px;
+            margin-left: -1.5px;
+            background: #fff;
+            box-shadow: 0 0 12px rgba(25, 9, 34, 0.4);
+            pointer-events: none;
+        }
+
+        .ba-handle {
+            position: absolute;
+            top: 50%;
+            left: var(--pos);
+            transform: translate(-50%, -50%);
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(25, 9, 34, 0.35);
+            pointer-events: none;
+        }
+
+        .ba-handle svg {
+            width: 26px;
+            height: 26px;
+            fill: none;
+            stroke: var(--ink);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .ba-label {
+            position: absolute;
+            top: 16px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            backdrop-filter: blur(6px);
+            pointer-events: none;
+        }
+
+        .ba-label-left {
+            left: 16px;
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--ink);
+        }
+
+        .ba-label-right {
+            right: 16px;
+            background: rgba(25, 9, 34, 0.55);
+            color: #fff;
+        }
+
+        .ba-hint {
+            text-align: center;
+            margin-top: 18px;
+            color: var(--slate);
+            font-size: 0.92rem;
+            font-weight: 600;
         }
 
         /* ===== FEATURES ===== */
@@ -1244,9 +1436,15 @@
 
             <div class="float-card float-main">
                 <div class="float-main-screen">
+                    <img class="screen-frame-img" src="assets/img/hero_pixar_frame.jpg" alt="Кадр из персонального мультфильма" onerror="this.style.display='none'">
                     <a class="float-play" href="https://t.me/Vashmult_bot" target="_blank" rel="noopener" aria-label="Создать мультик">
+                        <span class="play-ring"></span>
+                        <span class="play-ring r2"></span>
                         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </a>
+                    <div class="tap-hand" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M10.5 2.75a1.25 1.25 0 0 1 2.5 0V11h.75V6.25a1.25 1.25 0 0 1 2.5 0V11h.75V7.75a1.25 1.25 0 0 1 2.5 0V13c0 4.5-2.5 8.25-6.5 8.25-2.75 0-4.25-1-5.75-3.25L4.6 14.4c-.6-.9-.35-2.1.55-2.65.75-.45 1.7-.3 2.3.35l1 1.15V4.5a1.25 1.25 0 0 1 2.05-.96z"/></svg>
+                    </div>
                 </div>
                 <div class="float-main-meta">
                     <div>
@@ -1323,6 +1521,32 @@
                     <h3>Получите видео</h3>
                     <p>Скачайте готовый мультик — делитесь в мессенджерах и соцсетях</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BEFORE / AFTER ===== -->
+    <section class="magic" id="magic">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>Магия превращения</h2>
+                <p>Потяните шторку и посмотрите, как обычное фото становится мультфильмом</p>
+            </div>
+
+            <div class="ba-wrap reveal-scale">
+                <div class="ba-slider" id="baSlider">
+                    <img class="ba-img" src="assets/img/boy_after.jpg" alt="Мультяшная версия ребёнка">
+                    <div class="ba-before-clip">
+                        <img class="ba-img" src="assets/img/boy_before.jpg" alt="Фотография ребёнка">
+                    </div>
+                    <div class="ba-divider"></div>
+                    <div class="ba-handle">
+                        <svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg>
+                    </div>
+                    <span class="ba-label ba-label-left">Фото</span>
+                    <span class="ba-label ba-label-right">Мультик</span>
+                </div>
+                <p class="ba-hint">Лицо ребёнка сохраняется — он узнает себя с первой секунды</p>
             </div>
         </div>
     </section>
@@ -1625,6 +1849,7 @@
                     <li><a href="#how-it-works">Как это работает</a></li>
                     <li><a href="#pricing">Тарифы</a></li>
                     <li><a href="#faq">FAQ</a></li>
+                    <li><a href="oferta.html">Публичная оферта</a></li>
                 </ul>
             </div>
         </div>
@@ -1799,6 +2024,76 @@
             }
         }, { passive: true });
         onScrollFx();
+
+        // ===== hero sparkles =====
+        if (hero && !prefersReducedMotion) {
+            var sparklePath = 'M12 2l2.4 7.6L22 12l-7.6 2.4L12 22l-2.4-7.6L2 12l7.6-2.4z';
+            for (var si = 0; si < 7; si++) {
+                var sp = document.createElement('div');
+                sp.className = 'hero-sparkle';
+                var sz = Math.random() * 14 + 10;
+                sp.style.width = sz + 'px';
+                sp.style.height = sz + 'px';
+                sp.style.left = (8 + Math.random() * 84) + '%';
+                sp.style.top = (12 + Math.random() * 55) + '%';
+                sp.style.setProperty('--sd', (Math.random() * 4 + 5) + 's');
+                sp.style.setProperty('--sdel', (Math.random() * 6) + 's');
+                sp.innerHTML = '<svg viewBox="0 0 24 24"><path d="' + sparklePath + '"/></svg>';
+                hero.appendChild(sp);
+            }
+        }
+
+        // ===== before/after slider =====
+        var baSlider = document.getElementById('baSlider');
+        if (baSlider) {
+            var baPos = 50;
+            var baTouched = false;
+
+            function setBaPos(p) {
+                baPos = Math.max(4, Math.min(96, p));
+                baSlider.style.setProperty('--pos', baPos + '%');
+            }
+
+            function baFromEvent(e) {
+                var rect = baSlider.getBoundingClientRect();
+                var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+                setBaPos(x / rect.width * 100);
+            }
+
+            var baDragging = false;
+            baSlider.addEventListener('pointerdown', function(e) {
+                baDragging = true;
+                baTouched = true;
+                baSlider.setPointerCapture(e.pointerId);
+                baFromEvent(e);
+            });
+            baSlider.addEventListener('pointermove', function(e) {
+                if (baDragging) baFromEvent(e);
+            });
+            baSlider.addEventListener('pointerup', function() { baDragging = false; });
+            baSlider.addEventListener('pointercancel', function() { baDragging = false; });
+
+            // gentle auto-sway until first touch (gif-like invitation)
+            if (!prefersReducedMotion) {
+                var swayStart = null;
+                function sway(ts) {
+                    if (baTouched) return;
+                    if (!swayStart) swayStart = ts;
+                    var t = (ts - swayStart) / 1000;
+                    setBaPos(50 + Math.sin(t * 0.9) * 14);
+                    requestAnimationFrame(sway);
+                }
+                var baObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting && !baTouched) {
+                            requestAnimationFrame(sway);
+                            baObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.4 });
+                baObserver.observe(baSlider);
+            }
+        }
 
         // FAQ accordion
         document.querySelectorAll('.faq-question').forEach(function(btn) {
